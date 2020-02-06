@@ -1,0 +1,28 @@
+---
+title: "Central American Migration"
+author: "Ethan Tenison"
+date: "2/6/2020"
+output: html_document
+---
+
+```{r setup, message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(janitor)
+library(tidyverse)
+```
+
+
+# Plot of Central American Migrantion into the United States. 
+
+
+```{r CA_migrantion}
+df <- read.csv("census_numbers.csv", stringsAsFactors = FALSE)
+df <- clean_names(df)
+names(df) <- as.matrix(df[4,])
+df <- df[-1,]
+df <- df[6:238,1:6]
+df <- rename(df, country = "Region and country or area")
+df$country <- as.character(df$country)
+df <- filter(df, country %in% c("El Salvador", "Honduras","Guatemala"))
+```
