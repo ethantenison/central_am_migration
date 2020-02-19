@@ -106,7 +106,7 @@ ggplot(data = df, aes(x = year, y = population, group = Country)) +
    annotate(
       "text",
       x = 1989,
-      y = 950000,
+      y = 970000,
       label = expression("Hurricane Mitch \n", paste("hits Honduras")),
       size = 3.5
    ) +
@@ -122,7 +122,7 @@ ggplot(data = df, aes(x = year, y = population, group = Country)) +
    annotate(
       "text",
       x = 1970,
-      y = 550000,
+      y = 450000,
       label = expression("Salvadoran \n", paste("Civil War begins")),
       size = 3.5
    ) 
