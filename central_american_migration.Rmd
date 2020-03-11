@@ -21,6 +21,8 @@ library(ggspatial)
 library(ggpubr)
 library(cowplot)
 library(scales)
+library(extrafont)
+windowsFonts(Times=windowsFont("Times New Roman"))
 ```
 
 
@@ -86,10 +88,11 @@ plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF", "#CC4678FF")
 theme_set(theme_bw())
 ggplot(data = df, aes(x = year, y = population, group = Country)) +
    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-         panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+         text=element_text(family="Times", face = "bold", size=12)) +
    geom_line(aes(color = Country), size = 2) +
    geom_point(aes(color = Country)) +
-   ggtitle("Population of foreign born Central Americans in the United States") +
+   #ggtitle("Population of foreign born Central Americans in the United States") +
    xlab("Year") +
    ylab("Population") +
    scale_y_continuous(label=comma) +
@@ -162,7 +165,7 @@ world$x2018 <- as.numeric(world$x2018)
       scale_fill_viridis(option = "plasma", direction = -1) +
       theme( axis.title.x = element_blank(), 
             axis.title.y = element_blank(), panel.background = element_rect(fill = "azure"), 
-            panel.border = element_rect(fill = NA))+
+            panel.border = element_rect(fill = NA), text=element_text(family="Times", face = "bold", size=12))+
       geom_text(data = coords, x = coords$long, y = coords$lat, label= coords$HDI, nudge_x = 0.25,
                 nudge_y = 0.25, check_overlap = T) +
       labs(fill = "HDI"))
@@ -199,7 +202,7 @@ world<-world[!(world$x2018 <.6),]
       geom_sf(aes(fill = x2018)) +
       coord_sf(xlim = c(-120.15, -30.12), ylim = c(-60, 45), expand = FALSE) +
       scale_fill_viridis(option = "plasma", direction = -1) +
-      theme( axis.title.x = element_blank(), 
+      theme( axis.title.x = element_blank(), text=element_text(family="Times", face = "bold", size=12),
             axis.title.y = element_blank(), panel.background = element_rect(fill = "azure"), 
             panel.border = element_rect(fill = NA))+
       labs(fill = "HDI"))
@@ -209,7 +212,7 @@ ggsave("latin_america_hdi.png")
 
 
 ```{r commodities}
-library("readxl")
+library(readxl)
 
 commodities <- read_excel("CMOHistoricalDataAnnual.xlsx", sheet = "Annual Prices (Real)")
 commodities <- dplyr::rename(commodities, "year" = "...1")
@@ -231,13 +234,16 @@ commodities <-pivot_longer(
 plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF", "#CC4678FF")
 p <- ggplot(commodities, aes(x = year, y=value, color = Commodity)) + 
    geom_line(size = 2, show.legend = FALSE) + 
-   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(), axis.line = element_line(colour = "black")) +labs(caption = "Data source: The World Bank") + 
+   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+         text=element_text(family="Times", face = "bold", size=12)) +
+   labs(caption = "Data source: The World Bank") + 
    scale_color_manual(values = plasma_pal) + 
    xlab("Year") +
    ylab("Real Prices (Adjusted for Inflation)") +
    scale_y_continuous(labels = scales::dollar)
 
-p + facet_wrap(~Commodity, scale = "free") + theme(strip.background =element_rect(fill="white"))
+p + facet_wrap(~Commodity, scale = "free") + theme(strip.background =element_rect(fill="white", color = "white"), panel.border=element_blank())
 
 ggsave("commodity_prices.png")
 ```
@@ -247,4 +253,71 @@ ggsave("commodity_prices.png")
 combined_hdi <- ggarrange(ggulf, gamerica, ncol = 2, nrow = 1, widths =c(1,1), heights = c(1,1))
 combined_hdi
                  
+```
+
+
+```{r INM_Employees}
+library(lubridate)
+ana <- read.csv("INM_Employees_HiredDate - INM_Employees_NoMajor.csv", stringsAsFactors = FALSE)
+
+
+ana <- ana %>% mutate(count = 1) %>%
+        mutate(Date.Hired = as.Date(Date.Hired, "%m/%d/%y")) %>% 
+        filter(Date.Hired >= as.Date("2018-12-01")) %>%
+        group_by(month=floor_date(Date.Hired, "month")) %>% 
+        summarize(count = sum(count)) %>%
+        add_row(month = as.Date("2018-12-01"), count = 40)
+        
+
+
+theme_set(theme_bw())
+ggplot(data = ana, aes(x = month, y = count)) +
+   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+         text=element_text(family="Times", face = "bold", size=10)) +
+   geom_line(size = 2, color = "#7E03A8FF") +
+    scale_x_date(date_breaks = "2 month",
+                 date_minor_breaks = "1 month",
+                 date_labels = "%b %Y") +
+   xlab("Month Hired") +
+   ylab("INM Agents") +
+   labs(caption = "Data source: INM Transparency Request") +
+   geom_vline(xintercept = as.Date("2019-06-01"), linetype = "dashed") +
+   geom_segment(aes(
+      x = as.Date("2019-05-10"),
+      y = 100,
+      xend = as.Date("2019-05-30"),
+      yend = 100
+   ),
+   arrow = arrow(length = unit(0.5, "cm"))) +
+   annotate(
+      "text",
+      x = as.Date("2019-04-10"),
+      y = 100,
+      label = expression("Garduño is appointed \n", paste("as INM director")),
+      size = 3.5
+   ) +
+   
+   
+   geom_vline(xintercept = as.Date("2018-12-01"), linetype = "dashed") +
+   geom_segment(aes(
+      x = as.Date("2018-12-30"),
+      y = 55,
+      xend = as.Date("2018-12-10"),
+      yend = 55
+   ),
+   arrow = arrow(length = unit(0.5, "cm"))) +
+   annotate(
+      "text",
+      x = as.Date("2019-02-01"),
+      y = 50,
+      label = expression("López Obrador \n", paste("assumes presidency")),
+      size = 3.5
+   )
+   
+   
+   
+        
+ggsave("inm_hiring.png")
+
 ```
