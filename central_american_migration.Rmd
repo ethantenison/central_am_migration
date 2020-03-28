@@ -15,13 +15,13 @@ library(viridis)
 library(raster)
 library(maptools)
 library(sf)
-library(rnaturalearth)
-library(rnaturalearthdata)
 library(ggspatial)
 library(ggpubr)
 library(cowplot)
 library(scales)
 library(extrafont)
+library(rnaturalearth)
+library(rnaturalearthdata)
 windowsFonts(Times=windowsFont("Times New Roman"))
 ```
 
@@ -90,8 +90,8 @@ ggplot(data = df, aes(x = year, y = population, group = Country)) +
    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
          text=element_text(family="Times", face = "bold", size=12)) +
-   geom_line(aes(color = Country), size = 2) +
-   geom_point(aes(color = Country)) +
+   geom_line(aes(color = Country), size = 1) +
+   #geom_point(aes(color = Country)) +
    #ggtitle("Population of foreign born Central Americans in the United States") +
    xlab("Year") +
    ylab("Population") +
@@ -233,11 +233,11 @@ commodities <-pivot_longer(
 )
 plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF", "#CC4678FF")
 p <- ggplot(commodities, aes(x = year, y=value, color = Commodity)) + 
-   geom_line(size = 2, show.legend = FALSE) + 
+   geom_line(size = 1, show.legend = FALSE) + 
    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
          text=element_text(family="Times", face = "bold", size=12)) +
-   labs(caption = "Data source: The World Bank") + 
+   labs(caption = "Source: The World Bank") + 
    scale_color_manual(values = plasma_pal) + 
    xlab("Year") +
    ylab("Real Prices (Adjusted for Inflation)") +
@@ -274,14 +274,15 @@ theme_set(theme_bw())
 ggplot(data = ana, aes(x = month, y = count)) +
    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
-         text=element_text(family="Times", face = "bold", size=10)) +
-   geom_line(size = 2, color = "#7E03A8FF") +
-    scale_x_date(date_breaks = "2 month",
+         text=element_text(family="Times", face = "bold", size=12),
+         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+   geom_line(size = 1, color = "#7E03A8FF") +
+    scale_x_date(date_breaks = "1 month",
                  date_minor_breaks = "1 month",
                  date_labels = "%b %Y") +
    xlab("Month Hired") +
    ylab("INM Agents") +
-   labs(caption = "Data source: INM Transparency Request") +
+   labs(caption = "Source: INM Transparency Request") +
    geom_vline(xintercept = as.Date("2019-06-01"), linetype = "dashed") +
    geom_segment(aes(
       x = as.Date("2019-05-10"),
@@ -320,4 +321,102 @@ ggplot(data = ana, aes(x = month, y = count)) +
         
 ggsave("inm_hiring.png")
 
+```
+
+
+```{r motivo_estancia_autorizada}
+library(lubridate)
+
+Humanitarian_Visa_Graph <- read_excel("Humanitarian Visa Graph.xlsx", 
+    sheet = "Sheet2")
+
+Humanitarian_Visa_Graph$date <- ymd(Humanitarian_Visa_Graph$date)
+
+Humanitarian_Visa_Graph <- filter(Humanitarian_Visa_Graph, date >= as.Date("2016-01-01"))
+
+theme_set(theme_bw())
+ggplot(data = Humanitarian_Visa_Graph, aes(x = date, y = count_mea)) +
+   theme(
+         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+         text=element_text(family="Times", face = "bold", size=12), 
+         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+   geom_line(size = 1, color = "#7E03A8FF")+
+   scale_y_continuous(label=comma) +
+    scale_x_date(date_breaks = "3 month",
+                 date_minor_breaks = "1 month",
+                 date_labels = "%b %Y") +
+   xlab("Date") +
+   ylab("Humanitarian Visas Issued") +
+   labs(caption = "Source: INM Transparency Request")
+
+ggsave("humanitarian_visas.png")
+
+```
+
+
+```{r comar_funding}
+library(extrafont)
+loadfonts(device = "win")
+
+
+Comar_Budget_App <- read_excel("Comar Budget and Applications 2013-2020.xlsx")
+Comar_Budget_App <- clean_names(Comar_Budget_App)
+
+
+theme_set(theme_bw())
+ggplot(data = Comar_Budget_App) + 
+   theme(legend.background = element_rect(fill = "transparent"), 
+         legend.box.background = element_rect(fill = "transparent"),
+         legend.key = element_rect(fill = "transparent"), 
+         legend.spacing = unit(-1, "lines"),
+         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+         text=element_text(family="Georgia", face = "bold", size=12), 
+         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+         axis.text.y = element_text(hjust = 1.25),
+         axis.text.y.right = element_text(hjust = -.25),
+         axis.title.y.right = element_text(color = "#CC4678FF"),
+         axis.title.y.left = element_text(color = "#7E03A8FF"),
+          legend.position = "bottom")+
+   geom_bar(aes(x=year, y=refugee_status_applications_submitted),stat="identity", fill="#7E03A8FF",width = .5) +
+   geom_line(aes(x=year, y=applications_per_peso*8),color = "#CC4678FF", size = 1,stat="identity") + 
+   scale_y_continuous(label = comma, sec.axis = sec_axis(~./8, name = "Pesos per Applicant", label = comma)) +
+   scale_x_continuous(breaks = c(2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
+   xlab("Year") +
+   ylab("Refugee Applications Submitted") +
+   labs(caption = "Source: COMAR Transparency Request")
+
+   
+   
+ggsave("comar_budget.png")
+
+```
+
+
+
+```{r crimes_against_migrants}
+
+Complaints_byINM <- read_excel("Complaints_byINM.xlsx")
+Complaints_byINM <- clean_names(Complaints_byINM)
+
+
+theme_set(theme_bw())
+ggplot(data = Complaints_byINM) +
+   theme(legend.background = element_rect(fill = "transparent"), 
+         legend.box.background = element_rect(fill = "transparent"),
+         legend.key = element_rect(fill = "transparent"), 
+         legend.spacing = unit(-1, "lines"),
+         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+         text=element_text(family="Georgia", face = "bold", size=12), 
+         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+         axis.text.y = element_text(hjust = 1.25)) +
+   geom_line(aes(x=year, y=complaint_number), color = "#0D0887FF", size = 1,stat="identity")+
+   geom_point(aes(x=year, y=complaint_number), color = "#0D0887FF")+
+   geom_text(aes(x= year, y = complaint_number, label=complaint_number),hjust=.25, vjust=-2.5)+
+   ylim(500, 725)+
+   scale_x_continuous(breaks = c(2014,2015,2016,2017,2018,2019,2020)) +
+   xlab("Year") +
+   ylab("Number of Complaints") +
+   labs(caption = "Source: INM Transparency Request")
+
+ggsave("inm_complaints.png")
 ```
