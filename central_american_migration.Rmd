@@ -215,12 +215,13 @@ world$x2018 <- as.numeric(world$x2018)
       scale_fill_viridis(option = "plasma", direction = -1) +
       theme( axis.title.x = element_blank(), 
             axis.title.y = element_blank(), panel.background = element_rect(fill = "azure"), 
-            panel.border = element_rect(fill = NA), text=element_text(family="Times", face = "bold", size=12))+
+            panel.border = element_rect(fill = NA), text=element_text(family="Georgia", face = "bold", size=12))+
       geom_text(data = coords, x = coords$long, y = coords$lat, label= coords$HDI, nudge_x = 1,
                 nudge_y = 0.25, check_overlap = T) +
       annotate(geom = "text", x = -91.7, y = 32.26, label = "$55,681", 
                fontface = "italic", color = "white", size = 6) +
-      labs(fill = "GDP Percapita (PPP)"))
+      labs(fill = "GDP Percapita (PPP)")+
+      labs(caption = "Source: Trading Economics") )
 
 ggsave("gdp_percapita.png")
 ```
@@ -479,6 +480,12 @@ ggsave("inm_complaints.png")
 library(readxl)
 library(janitor)
 library(viridis)
+library(janitor)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(extrafont)
+
 price_coyote <- read_excel("price of hiring a guide.xlsx")
 price_coyote <- clean_names(price_coyote)
 price_coyote <- gather(price_coyote, year, value, x2012:x2019)
@@ -504,9 +511,42 @@ price_coyote$year <- as.numeric(price_coyote$year)
     geom_line(aes(x=year, y=value, color = measure), size = 1,stat="identity")+
     xlab("Year") +
    ylab("Cost of Hiring a guide") +
-   labs(caption = "Source: INM Transparency Request")
+   labs(caption = "Source: COLEF")
     
    
+ggsave("price_hiring_guide.png")
 
+```
+
+
+```{r percentage_guide}
+library(readxl)
+contratoguia <- read_excel("contratoguia.xlsx", 
+    sheet = "Contracting by Year")
+
+contratoguia <- na.omit(contratoguia)
+contratoguia <- mutate(contratoguia, perch = as.character(Percentage_Yes))
+contratoguia$perch=paste(contratoguia$perch, " %")
+
+theme_set(theme_bw())
+ggplot(data = contratoguia) +
+   theme(legend.background = element_rect(fill = "transparent"), 
+         legend.box.background = element_rect(fill = "transparent"),
+         legend.key = element_rect(fill = "transparent"), 
+         legend.spacing = unit(-1, "lines"),
+         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+         text=element_text(family="Georgia", face = "bold", size=12), 
+         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+         axis.text.y = element_text(hjust = 1.25)) +
+   geom_line(aes(x=Year, y=Percentage_Yes), color = "#CC4678FF", size = 1,stat="identity")+
+   geom_point(aes(x=Year, y=Percentage_Yes), color = "#CC4678FF")+
+   geom_text(aes(x= Year, y = Percentage_Yes, label=perch),hjust=.25, vjust=-2)+
+   ylim(40, 65) +
+   scale_x_continuous(breaks = c(2011,2012,2013,2014,2015,2016,2017,2018,2019)) +
+   xlab("Year") +
+   ylab("Hired a guide (%)") +
+   labs(caption = "Source: COLEF")
+
+ggsave("hired_guide.png")
 
 ```
