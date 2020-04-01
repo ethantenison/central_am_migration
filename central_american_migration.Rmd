@@ -324,7 +324,7 @@ ana <- ana %>% mutate(count = 1) %>%
 
 theme_set(theme_bw())
 ggplot(data = ana, aes(x = month, y = count)) +
-   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+   theme(panel.grid.major = element_blank(),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
          text=element_text(family="Times", face = "bold", size=12),
          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
@@ -537,7 +537,8 @@ ggplot(data = contratoguia) +
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
          text=element_text(family="Georgia", face = "bold", size=12), 
          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-         axis.text.y = element_text(hjust = 1.25)) +
+         axis.text.y = element_text(hjust = 1.25),
+         panel.grid.minor = element_blank(),) +
    geom_line(aes(x=Year, y=Percentage_Yes), color = "#CC4678FF", size = 1,stat="identity")+
    geom_point(aes(x=Year, y=Percentage_Yes), color = "#CC4678FF")+
    geom_text(aes(x= Year, y = Percentage_Yes, label=perch),hjust=.25, vjust=-2)+
@@ -549,4 +550,28 @@ ggplot(data = contratoguia) +
 
 ggsave("hired_guide.png")
 
+```
+
+```{r inm_employees}
+
+library(readr)
+library(dplyr)
+
+INM_EMPLOYEES_CLEAN <- read_csv("INM_EMPLOYEES_CLEAN.csv")
+
+inm_emp<- INM_EMPLOYEES_CLEAN %>% dplyr::select(State) %>% filter(State != "" ) %>% mutate(number = 1) 
+inm_emp<- inm_emp %>% dplyr::group_by(State) %>% summarize(number_agents = sum(number))
+
+adds <- data.frame("State" = c("Colima", "Estado de Mexico"), "number_agents" = c(0,0))
+
+inm_emp <- rbind(inm_emp,adds)
+
+                         # Install stringi package
+library("stringi")   
+
+inm_emp$State <- stri_trans_totitle(inm_emp$State) 
+
+library(sf)
+
+mexico <- st_read("mex_admbnda_adm1_govmex.shp")
 ```
