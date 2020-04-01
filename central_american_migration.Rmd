@@ -419,4 +419,43 @@ ggplot(data = Complaints_byINM) +
    labs(caption = "Source: INM Transparency Request")
 
 ggsave("inm_complaints.png")
+
+
+```
+
+
+```{r}
+library(readxl)
+library(janitor)
+library(viridis)
+price_coyote <- read_excel("price of hiring a guide.xlsx")
+price_coyote <- clean_names(price_coyote)
+price_coyote <- gather(price_coyote, year, value, x2012:x2019)
+price_coyote <- rename(price_coyote, measure = x1)
+price_coyote$year <- gsub("x", "", price_coyote$year)
+price_coyote$year <- as.numeric(price_coyote$year)
+
+
+ theme_set(theme_bw())
+ ggplot(data = price_coyote) + 
+    theme(legend.background = element_rect(fill = "transparent"), 
+          legend.box.background = element_rect(fill = "transparent"),
+          legend.key = element_rect(fill = "transparent"),
+          legend.title = element_blank(),
+          legend.spacing = unit(-1, "lines"),
+          panel.background = element_blank(), axis.line = element_line(colour = "black"),
+          text=element_text(family="Georgia", face = "bold", size=12), 
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+          axis.text.y = element_text(hjust = 1.25),
+          axis.text.y.right = element_text(hjust = -.25),
+           legend.position = "right")+
+     scale_color_manual(values=c("#7E03A8FF", "#F89441FF")) +
+    geom_line(aes(x=year, y=value, color = measure), size = 1,stat="identity")+
+    xlab("Year") +
+   ylab("Cost of Hiring a guide") +
+   labs(caption = "Source: INM Transparency Request")
+    
+   
+
+
 ```
