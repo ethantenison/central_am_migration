@@ -562,16 +562,19 @@ INM_EMPLOYEES_CLEAN <- read_csv("INM_EMPLOYEES_CLEAN.csv")
 inm_emp<- INM_EMPLOYEES_CLEAN %>% dplyr::select(State) %>% filter(State != "" ) %>% mutate(number = 1) 
 inm_emp<- inm_emp %>% dplyr::group_by(State) %>% summarize(number_agents = sum(number))
 
-adds <- data.frame("State" = c("Colima", "Estado de Mexico"), "number_agents" = c(0,0))
+adds <- data.frame("State" = c("COLIMA", "MEXICO"), "number_agents" = c(0,0))
 
 inm_emp <- rbind(inm_emp,adds)
 
                          # Install stringi package
 library("stringi")   
 
-inm_emp$State <- stri_trans_totitle(inm_emp$State) 
+#inm_emp$State <- stri_trans_totitle(inm_emp$State) 
 
 library(sf)
 
 mexico <- st_read("mex_admbnda_adm1_govmex.shp")
+
+df_mxstate <- left_join(mexico,inm_emp, by = c("ADM1_ES"="State"))
+df_mxstate <- dplyr::select(df_mxstate, ADM1_ES, number_agents, geometry)
 ```
