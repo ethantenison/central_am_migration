@@ -190,9 +190,9 @@ df$country[df$country == "United States"] <- "United States of America"
 df$gdp_percapita[is.na(df$gdp_percapita)] <- 0
 df$gdp_percapita <- as.numeric(df$gdp_percapita)
 
-coords <- data.frame("long" =c(-90.4,-98.8,-88.61,-86.94,-88.89,-85.04,-83.93,-79.55,-78.56,-77.36),
-                "lat" = c(15.3,18.9,17.1,14.78,13.62,12.66,9.88,9.11,21.80,18.12),
-                "HDI" = c("$7,509","$18,102","$7,810","$4,559","$7,393","$4,910","$15,685",	"$22,674", "$21,017"	,"$8,266"))
+coords <- data.frame("long" =c(-90.4,-98.8,-86.5,-86.94,-89.4,-85.3,-87.8,-79.55,-78.56,-77.36),
+                "lat" = c(15.3,18.9,17.1,14.78,12.6,12.66,9.88,10.5,23.8,17.12),
+                "HDI" = c("$8,462","$19,845","$8,648","$5,134","$8,332","$5,534","$17,671","$25,554", "$21,017"	,"$9,327"))
 
 
 ##Setting up the map
@@ -209,19 +209,20 @@ world$x2018 <- as.numeric(world$x2018)
 
 (ggulf <- ggplot(data = world) +
       geom_sf(aes(fill = gdp_percapita)) +
+      theme_map() +
       annotate(geom = "text", x = -90, y = 26, label = "Gulf of Mexico", 
-               fontface = "italic", color = "grey22", size = 6) +
+                size = 6) +
       coord_sf(xlim = c(-102.15, -74.12), ylim = c(7.65, 33.97), expand = FALSE) +
-      scale_fill_viridis(option = "plasma", direction = -1) +
+      scale_fill_viridis(option = "plasma", direction = -1, labels = dollar_format(prefix="$")) +
       theme( axis.title.x = element_blank(), 
             axis.title.y = element_blank(), panel.background = element_rect(fill = "azure"), 
+            plot.caption = element_text(hjust = 1.5), 
             panel.border = element_rect(fill = NA), text=element_text(family="Georgia", face = "bold", size=12))+
       geom_text(data = coords, x = coords$long, y = coords$lat, label= coords$HDI, nudge_x = 1,
                 nudge_y = 0.25, check_overlap = T) +
-      annotate(geom = "text", x = -91.7, y = 32.26, label = "$55,681", 
-               fontface = "italic", color = "white", size = 6) +
-      labs(fill = "GDP Percapita (PPP)")+
-      labs(caption = "Source: Trading Economics") )
+      annotate(geom = "text", x = -91.7, y = 32.26, label = "$62,795", 
+               color = "white", size = 6) +
+      labs(fill = "GDP Per capita, PPP"))
 
 ggsave("gdp_percapita.png")
 ```
@@ -408,7 +409,8 @@ ggsave("humanitarian_visas.png")
 
 ```{r comar_funding}
 library(extrafont)
-loadfonts(device = "win")
+library(readxl)
+
 
 
 Comar_Budget_App <- read_excel("Comar Budget and Applications 2013-2020.xlsx")
@@ -427,9 +429,9 @@ ggplot(data = Comar_Budget_App) +
          axis.text.y = element_text(hjust = 1.25),
          axis.text.y.right = element_text(hjust = -.25),
          axis.title.y.right = element_text(color = "#CC4678FF"),
-         axis.title.y.left = element_text(color = "#7E03A8FF"),
+         axis.title.y.left = element_text(color = "#0D0887FF"),
           legend.position = "bottom")+
-   geom_bar(aes(x=year, y=refugee_status_applications_submitted),stat="identity", fill="#7E03A8FF",width = .5) +
+   geom_bar(aes(x=year, y=refugee_status_applications_submitted),stat="identity", fill="#0D0887FF",width = .5) +
    geom_line(aes(x=year, y=applications_per_peso*8),color = "#CC4678FF", size = 1,stat="identity") + 
    scale_y_continuous(label = comma, sec.axis = sec_axis(~./8, name = "Pesos per Applicant", label = comma)) +
    scale_x_continuous(breaks = c(2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
@@ -510,7 +512,7 @@ price_coyote$year <- as.numeric(price_coyote$year)
      scale_color_manual(values=c("#7E03A8FF", "#F89441FF")) +
     geom_line(aes(x=year, y=value, color = measure), size = 1,stat="identity")+
     xlab("Year") +
-   ylab("Cost of Hiring a guide") +
+   ylab("Cost of Hiring a Guide") +
    labs(caption = "Source: COLEF")
     
    
