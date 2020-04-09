@@ -286,8 +286,10 @@ commodities <-pivot_longer(
 plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF", "#CC4678FF")
 p <- ggplot(commodities, aes(x = year, y=value, color = Commodity)) + 
    geom_line(size = 1, show.legend = FALSE) + 
-   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+   theme(panel.grid.major = element_blank(),
+         panel.grid.minor = element_blank(),
+         panel.background = element_blank(),
+         axis.line = element_line(colour = "black"),
          text=element_text(family="Times", face = "bold", size=12),
          axis.title.x = element_text(vjust = -3),
            axis.title.y = element_text(vjust = 3.5)) +
@@ -369,6 +371,8 @@ ggsave("inm_hiring.png")
 
 ```{r motivo_estancia_autorizada}
 library(lubridate)
+library(readxl)
+
 Humanitarian_Visa_Graph <- read_excel("Humanitarian Visa Graph.xlsx", 
     sheet = "Sheet2")
 Humanitarian_Visa_Graph$date <- ymd(Humanitarian_Visa_Graph$date)
@@ -388,6 +392,28 @@ ggplot(data = Humanitarian_Visa_Graph, aes(x = date, y = count_mea)) +
    ylab("Humanitarian Visas Issued") +
    labs(caption = "Source: INM Transparency Request")
 ggsave("humanitarian_visas.png")
+
+shortened <- filter(Humanitarian_Visa_Graph, date >= as.Date("2018-12-01") & date <= as.Date("2019-05-01"))
+
+
+theme_set(theme_bw())
+ggplot(data = shortened, aes(x = date, y = count_mea)) +
+   theme(
+         panel.background = element_blank(),
+         axis.line = element_line(colour = "black"),
+         text=element_text(family="Times", face = "bold", size=12), 
+         axis.text.x = element_blank(),
+         axis.title.x=element_blank(),
+         panel.border = element_blank(),
+         ) +
+   geom_line(size = 1, color = "#7E03A8FF")+
+   scale_y_continuous(label=comma) +
+    scale_x_date(date_breaks = "3 month",
+                 date_minor_breaks = "1 month",
+                 date_labels = "%b %Y") +
+   xlab("Date") +
+   ylab("Humanitarian Visas Issued")
+ggsave("humanitarian_visas_shortened.png", width = 15, height = 5)
 ```
 
 ### COMAR Funding 
@@ -557,10 +583,14 @@ ggsave("hired_guide.png")
 
 
 
+# Number of INM Employees 
 
 ```{r inm_employees}
 library(readr)
 library(dplyr)
+library(extrafont)
+windowsFonts("Times" =windowsFont("Times New Roman"))
+
 INM_EMPLOYEES_CLEAN <- read_csv("INM_EMPLOYEES_CLEAN.csv")
 inm_emp<- INM_EMPLOYEES_CLEAN %>% dplyr::select(State) %>% filter(State != "" ) %>% mutate(number = 1) 
 inm_emp<- inm_emp %>% dplyr::group_by(State) %>% summarize(number_agents = sum(number))
@@ -573,3 +603,25 @@ library(sf)
 mexico <- st_read("mex_admbnda_adm1_govmex.shp")
 df_mxstate <- left_join(mexico,inm_emp, by = c("ADM1_ES"="State"))
 df_mxstate <- dplyr::select(df_mxstate, ADM1_ES, number_agents, geometry)
+
+
+ggplot() +
+   geom_sf(data = df_mxstate, aes(fill = number_agents), size = .3) +
+   theme_map() +
+   scale_fill_viridis(option = "plasma", direction = 1) +
+      theme( axis.title.x = element_blank(), 
+            axis.title.y = element_blank(),
+            panel.background = element_rect(fill = "azure"), 
+            plot.caption = element_text(hjust = 1.43), 
+            panel.border = element_rect(fill = NA),
+            text=element_text(family="Times", face = "bold", size=12),
+            plot.title = element_text(hjust = 0.5)) +
+   labs(caption = "Source: INM Transparency Request", fill = "Number of Agents", title = "Number of Migration Officials in Mexico by State")
+
+ggsave("number_agents.png")   
+
+```
+
+
+
+
