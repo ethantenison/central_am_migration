@@ -451,7 +451,7 @@ ggplot(data = Comar_Budget_App, aes(x=year, y=refugee_status_applications_submit
    scale_fill_manual(values = "#0D0887FF") +
    xlab("Year") +
    ylab("Refugee Applications Submitted") +
-   labs(caption = "Source: COMAR", title = "COMAR Funding and Refugee Applications") +
+   #labs(caption = "Source: COMAR", title = "COMAR Funding and Refugee Applications") +
     geom_segment(aes(
       x = 2014,
       y = 88000,
@@ -490,7 +490,7 @@ ggplot(data = Complaints_byINM) +
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
          text=element_text(family="Georgia", face = "bold", size=12), 
          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-         axis.title.x = element_text(vjust = -3),
+         axis.title.x = element_text(vjust = -2),
          axis.text.y = element_text(hjust = 1.25),
          axis.title.y = element_text(vjust = 3.5),
          plot.title = element_text(hjust = 0.5)) +
@@ -501,8 +501,8 @@ ggplot(data = Complaints_byINM) +
    scale_x_continuous(breaks = c(2014,2015,2016,2017,2018,2019,2020)) +
    xlab("Year") +
    ylab("Number of Complaints") +
-   labs(caption = "Source: INM Transparency Request", title = "Number of Misconduct Complaints")
-ggsave("inm_complaints.png")
+   # labs(caption = "Source: INM Transparency Request", title = "Number of Misconduct Complaints")
+ggsave("inm_complaints.png", width =8, height = 5)
 ```
 ### Price of Hiring Guide
 
@@ -532,17 +532,18 @@ price_coyote$year <- as.numeric(price_coyote$year)
           axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
           axis.text.y = element_text(hjust = 1.25),
           axis.text.y.right = element_text(hjust = -.25),
-          axis.title.x = element_text(vjust = -3),
+          axis.title.x = element_text(vjust = -2),
            axis.title.y = element_text(vjust = 3.5),
-           legend.position = "top")+
+           legend.position = "right")+
      scale_color_manual(values=c("#7E03A8FF", "#F89441FF")) +
+    scale_x_continuous(breaks = c(2012,2013,2014,2015,2016,2017,2018,2019)) +
     geom_line(aes(x=year, y=value, color = measure), size = 1,stat="identity")+
     xlab("Year") +
    ylab("Cost of Hiring a Guide") +
-   labs(caption = "Source: COLEF")
+   #labs(caption = "Source: COLEF")
     
    
-ggsave("price_hiring_guide.png")
+ggsave("price_hiring_guide.png", width = 8, height = 5)
 ```
 
 ### Percentage Guide
@@ -566,7 +567,7 @@ ggplot(data = contratoguia) +
          text=element_text(family="Georgia", face = "bold", size=12), 
          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
          axis.text.y = element_text(hjust = 1.25),
-         axis.title.x = element_text(vjust = -3),
+         axis.title.x = element_text(vjust = -2),
            axis.title.y = element_text(vjust = 3.5),
          plot.title = element_text(hjust = 0.5),
          panel.grid.minor = element_blank()) +
@@ -577,8 +578,8 @@ ggplot(data = contratoguia) +
    scale_x_continuous(breaks = c(2011,2012,2013,2014,2015,2016,2017,2018,2019)) +
    xlab("Year") +
    ylab("Hired a Guide (%)") +
-   labs(caption = "Source: COLEF", title = "Percent of Migrants that Hired a Guide")
-ggsave("hired_guide.png")
+  # labs(caption = "Source: COLEF", title = "Percent of Migrants that Hired a Guide")
+ggsave("hired_guide.png", width = 8, height = 5)
 ```
 
 
@@ -593,13 +594,14 @@ windowsFonts("Times" =windowsFont("Times New Roman"))
 
 INM_EMPLOYEES_CLEAN <- read_csv("INM_EMPLOYEES_CLEAN.csv")
 inm_emp<- INM_EMPLOYEES_CLEAN %>% dplyr::select(State) %>% filter(State != "" ) %>% mutate(number = 1) 
-inm_emp<- inm_emp %>% dplyr::group_by(State) %>% summarize(number_agents = sum(number))
+inm_emp<- inm_emp %>% dplyr::group_by(State) %>% summarise(number_agents = sum(number))
 adds <- data.frame("State" = c("COLIMA", "MEXICO"), "number_agents" = c(0,0))
 inm_emp <- rbind(inm_emp,adds)
                          # Install stringi package
 library("stringi")   
 #inm_emp$State <- stri_trans_totitle(inm_emp$State) 
 library(sf)
+library(scales)
 mexico <- st_read("mex_admbnda_adm1_govmex.shp")
 df_mxstate <- left_join(mexico,inm_emp, by = c("ADM1_ES"="State"))
 df_mxstate <- dplyr::select(df_mxstate, ADM1_ES, number_agents, geometry)
@@ -612,16 +614,113 @@ ggplot() +
       theme( axis.title.x = element_blank(), 
             axis.title.y = element_blank(),
             panel.background = element_rect(fill = "azure"), 
-            plot.caption = element_text(hjust = 1.43), 
+           # plot.caption = element_text(hjust = 1.442), 
             panel.border = element_rect(fill = NA),
-            text=element_text(family="Times", face = "bold", size=12),
-            plot.title = element_text(hjust = 0.5)) +
-   labs(caption = "Source: INM Transparency Request", fill = "Number of Agents", title = "Number of Migration Officials in Mexico by State")
+            text=element_text(family="Times", face = "bold", size=10),
+            plot.title = element_text(hjust = 0.5),
+            legend.position = "bottom",
+           plot.caption = element_text(hjust = 0),
+           legend.margin=margin(0,0,0,0),
+           legend.box.margin=margin(-10,-10,0,0)
+           ) +
+            guides(fill = guide_colorbar(title.position = "top", barwidth = 10 ))+ 
+   labs( fill = "Number of Agents") # title = "Number of Mexican Migration Officials by State" caption = "Source: INM Transparency Request",
 
 ggsave("number_agents.png")   
 
 ```
 
 
+# Crimes Against Migrants Committed by Authorities by State
 
 
+```{r commited_by_authorities}
+
+library(readr)
+library(dplyr)
+library(extrafont)
+library(Hmisc)
+library(dplyr)
+windowsFonts("Times" =windowsFont("Times New Roman"))
+
+Quejas_INM <- read_csv("Quejas INM.csv")
+Quejas_INM$State <- toupper(Quejas_INM$State)
+Quejas_INM <- Quejas_INM %>% mutate(number = 1)
+
+Quejas_INM <- Quejas_INM %>% dplyr::group_by(State) %>% summarise(number_complaints = sum(number))
+
+library(sf)
+mexico <- st_read("mex_admbnda_adm1_govmex.shp")
+df_inmstate <- left_join(mexico,Quejas_INM, by = c("ADM1_ES"="State"))
+df_inmstate <- dplyr::select(df_inmstate, ADM1_ES, number_complaints, geometry)
+
+
+ggplot() +
+   geom_sf(data = df_inmstate, aes(fill = number_complaints), size = .3) +
+   theme_map() +
+   scale_fill_viridis(option = "plasma", direction = 1) +
+      theme( axis.title.x = element_blank(), 
+            axis.title.y = element_blank(),
+            panel.background = element_rect(fill = "azure"), 
+           # plot.caption = element_text(hjust = 1.442), 
+            panel.border = element_rect(fill = NA),
+            text=element_text(family="Times", face = "bold", size=10),
+            plot.title = element_text(hjust = 0.5), 
+           plot.caption = element_text(hjust = 0),
+           legend.margin=margin(0,0,0,0),
+           legend.box.margin=margin(-10,-10,0,0),
+           legend.position = "bottom") +
+    guides(fill = guide_colorbar(title.position = "top", barwidth = 8 )) +
+   labs(fill = "Number of Complaints") # title = "Crimes Against Migrants Committed by Authorities by State" caption = "Source: CNDH Transparency Request",
+
+ggsave("number_complaints.png")   
+
+```
+
+
+# Complaints by INM per month 2019
+
+```{r inm_complaints_month}
+
+
+library(readxl)
+library(lubridate)
+Complaints_byINM_1_ <- read_excel("Complaints_byINM (1).xlsx", 
+    sheet = "Monthly")
+Complaints_byINM_1_ <- rename(Complaints_byINM_1_, complaint_amount = "Complaint Amount")
+Complaints_byINM_1_$Month <- as.Date(Complaints_byINM_1_$Month, format = "%m/%d/%Y")
+
+theme_set(theme_bw())
+ggplot(data = Complaints_byINM_1_) +
+   theme(legend.background = element_rect(fill = "transparent"), 
+         legend.box.background = element_rect(fill = "transparent"),
+         legend.key = element_rect(fill = "transparent"), 
+         legend.spacing = unit(-1, "lines"),
+         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+         text=element_text(family="Georgia", face = "bold", size=12), 
+         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+         axis.title.x = element_text(vjust = -1.5),
+         axis.text.y = element_text(hjust = 1.25),
+         axis.title.y = element_text(vjust = 3.5),
+         plot.title = element_text(hjust = 0.5)) +
+   geom_line(aes(x=Month, y=complaint_amount), color = "#0D0887FF", size = 1,stat="identity")+
+   geom_point(aes(x=Month, y=complaint_amount), color = "#0D0887FF")+
+   geom_text(aes(x= Month, y = adj, label=complaint_amount))+
+   scale_x_date(date_breaks = "1 month", date_labels = "%B") +
+   xlab("Month") +
+   ylab("Number of Complaints") +
+   ylim(40, 100)
+   labs(caption = "Source: INM Transparency Request", title = "Number of Misconduct Complaints")
+ggsave("inm_complaints.png")
+
+
+```
+
+
+
+
+```{r pie}
+
+
+
+```
