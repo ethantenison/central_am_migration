@@ -6,6 +6,10 @@ output: html_document
 ---
 
 ```{r setup, message=FALSE}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 list.of.packages <- c(
    "ggplot2",
    "dplyr",
@@ -22,8 +26,15 @@ list.of.packages <- c(
    "rnaturalearth",
    "rnaturalearthdata"
 )
+<<<<<<< HEAD
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages, repos='https://cran.rstudio.com/ ', dependencies = TRUE)
+=======
+
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages, repos='https://cran.rstudio.com/ ', dependencies = TRUE)
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 library(ggplot2)
 library(dplyr)
 library(janitor)
@@ -231,6 +242,10 @@ ggsave("gdp_percapita.png")
 ### HDI of Latin American 
 
 *Haiti was removed because it skewed the scale. 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 ```{r hdi_latin_am}
 df <- read.csv("Human Development Index (HDI).csv", stringsAsFactors = FALSE)
 names(df) <- as.matrix(df[1,])
@@ -260,6 +275,10 @@ world<-world[!(world$x2018 <.6),]
 ggsave("latin_america_hdi.png")
 ```
 ### Price of Commodities
+<<<<<<< HEAD
+=======
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 ```{r commodities}
 library(readxl)
 commodities <- read_excel("CMOHistoricalDataAnnual.xlsx", sheet = "Annual Prices (Real)")
@@ -296,6 +315,11 @@ p <- ggplot(commodities, aes(x = year, y=value, color = Commodity)) +
 p + facet_wrap(~Commodity, scale = "free") + theme(strip.background =element_rect(fill="white", color = "white"), panel.border=element_blank())
 ggsave("commodity_prices.png")
 ```
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 ### INM Employees
 ```{r INM_Employees}
 library(lubridate)
@@ -358,11 +382,22 @@ ggplot(data = ana, aes(x = month, y = count)) +
         
 ggsave("inm_hiring.png")
 ```
+<<<<<<< HEAD
 ### Humanitarian Visa Graph 
 ```{r motivo_estancia_autorizada}
 library(lubridate)
 library(readxl)
 windowsFonts("Georgia" =windowsFont("Georgia"))
+=======
+
+
+### Humanitarian Visa Graph 
+
+```{r motivo_estancia_autorizada}
+library(lubridate)
+library(readxl)
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 Humanitarian_Visa_Graph <- read_excel("Humanitarian Visa Graph.xlsx", 
     sheet = "Sheet2")
 Humanitarian_Visa_Graph$date <- ymd(Humanitarian_Visa_Graph$date)
@@ -382,31 +417,58 @@ ggplot(data = Humanitarian_Visa_Graph, aes(x = date, y = count_mea)) +
    ylab("Humanitarian Visas Issued") +
    labs(caption = "Source: INM Transparency Request")
 ggsave("humanitarian_visas.png")
+<<<<<<< HEAD
 shortened <- filter(Humanitarian_Visa_Graph, date >= as.Date("2018-12-01") & date <= as.Date("2019-05-01"))
+=======
+
+shortened <- filter(Humanitarian_Visa_Graph, date >= as.Date("2018-12-01") & date <= as.Date("2019-05-01"))
+
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 theme_set(theme_bw())
 ggplot(data = shortened, aes(x = date, y = count_mea)) +
    theme(
          panel.background = element_blank(),
          axis.line = element_line(colour = "black"),
+<<<<<<< HEAD
          text=element_text(family="Georgia", face = "bold", size=12), 
          # axis.text.x = element_blank(),
          # axis.title.x=element_blank(),
+=======
+         text=element_text(family="Times", face = "bold", size=12), 
+         axis.text.x = element_blank(),
+         axis.title.x=element_blank(),
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
          panel.border = element_blank(),
          ) +
    geom_line(size = 1, color = "#7E03A8FF")+
    scale_y_continuous(label=comma) +
+<<<<<<< HEAD
     scale_x_date(date_breaks = "1 month",
+=======
+    scale_x_date(date_breaks = "3 month",
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
                  date_minor_breaks = "1 month",
                  date_labels = "%b %Y") +
    xlab("Date") +
    ylab("Humanitarian Visas Issued")
 ggsave("humanitarian_visas_shortened.png", width = 15, height = 5)
 ```
+<<<<<<< HEAD
 ### COMAR Funding 
+=======
+
+### COMAR Funding 
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 ```{r comar_funding}
 library(extrafont)
 library(readxl)
 windowsFonts("Georgia" = windowsFont("Georgia"))
+<<<<<<< HEAD
+=======
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 Comar_Budget_App <- read_excel("Comar Budget and Applications 2013-2020.xlsx")
 Comar_Budget_App <- clean_names(Comar_Budget_App)
 Comar_Budget_App <- mutate(Comar_Budget_App, apps = "Applications Submitted", perpes = "Pesos per Applicant")
@@ -454,10 +516,22 @@ ggplot(data = Comar_Budget_App, aes(x=year, y=refugee_status_applications_submit
    
 ggsave("comar_budget.png")
 ```
+<<<<<<< HEAD
 ### Crimes Against Migrants 
 ```{r crimes_against_migrants}
 windowsFonts("Georgia" = windowsFont("Georgia"))
 library(readxl)
+=======
+
+### Crimes Against Migrants 
+
+```{r crimes_against_migrants}
+
+windowsFonts("Georgia" = windowsFont("Georgia"))
+
+library(readxl)
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 Complaints_byINM <- read_excel("Complaints_byINM.xlsx")
 Complaints_byINM <- clean_names(Complaints_byINM)
 theme_set(theme_bw())
@@ -484,6 +558,10 @@ ggplot(data = Complaints_byINM) +
 ggsave("inm_complaints.png", width =8, height = 5)
 ```
 ### Price of Hiring Guide
+<<<<<<< HEAD
+=======
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 ```{r}
 library(readxl)
 library(janitor)
@@ -523,11 +601,19 @@ price_coyote$year <- as.numeric(price_coyote$year)
    
 ggsave("price_hiring_guide.png", width = 8, height = 5)
 ```
+<<<<<<< HEAD
+=======
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 ### Percentage Guide
 ```{r percentage_guide}
 library(readxl)
 library(extrafont)
 windowsFonts("Georgia" = windowsFont("Georgia"))
+<<<<<<< HEAD
+=======
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 contratoguia <- read_excel("contratoguia.xlsx", 
     sheet = "Contracting by Year")
 contratoguia <- na.omit(contratoguia)
@@ -557,12 +643,24 @@ ggplot(data = contratoguia) +
   # labs(caption = "Source: COLEF", title = "Percent of Migrants that Hired a Guide")
 ggsave("hired_guide.png", width = 8, height = 5)
 ```
+<<<<<<< HEAD
 # Number of INM Employees 
+=======
+
+
+
+# Number of INM Employees 
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 ```{r inm_employees}
 library(readr)
 library(dplyr)
 library(extrafont)
 windowsFonts("Times" =windowsFont("Times New Roman"))
+<<<<<<< HEAD
+=======
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 INM_EMPLOYEES_CLEAN <- read_csv("INM_EMPLOYEES_CLEAN.csv")
 inm_emp<- INM_EMPLOYEES_CLEAN %>% dplyr::select(State) %>% filter(State != "" ) %>% mutate(number = 1) 
 inm_emp<- inm_emp %>% dplyr::group_by(State) %>% summarise(number_agents = sum(number))
@@ -576,6 +674,11 @@ library(scales)
 mexico <- st_read("mex_admbnda_adm1_govmex.shp")
 df_mxstate <- left_join(mexico,inm_emp, by = c("ADM1_ES"="State"))
 df_mxstate <- dplyr::select(df_mxstate, ADM1_ES, number_agents, geometry)
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 ggplot() +
    geom_sf(data = df_mxstate, aes(fill = number_agents), size = .3) +
    theme_map() +
@@ -594,24 +697,53 @@ ggplot() +
            ) +
             guides(fill = guide_colorbar(title.position = "top", barwidth = 10 ))+ 
    labs( fill = "Number of Agents") # title = "Number of Mexican Migration Officials by State" caption = "Source: INM Transparency Request",
+<<<<<<< HEAD
 ggsave("number_agents.png")   
 ```
 # Crimes Against Migrants Committed by Authorities by State
 ```{r commited_by_authorities}
+=======
+
+ggsave("number_agents.png")   
+
+```
+
+
+# Crimes Against Migrants Committed by Authorities by State
+
+
+```{r commited_by_authorities}
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 library(readr)
 library(dplyr)
 library(extrafont)
 library(Hmisc)
 library(dplyr)
 windowsFonts("Times" =windowsFont("Times New Roman"))
+<<<<<<< HEAD
 Quejas_INM <- read_csv("Quejas INM.csv")
 Quejas_INM$State <- toupper(Quejas_INM$State)
 Quejas_INM <- Quejas_INM %>% mutate(number = 1)
 Quejas_INM <- Quejas_INM %>% dplyr::group_by(State) %>% summarise(number_complaints = sum(number))
+=======
+
+Quejas_INM <- read_csv("Quejas INM.csv")
+Quejas_INM$State <- toupper(Quejas_INM$State)
+Quejas_INM <- Quejas_INM %>% mutate(number = 1)
+
+Quejas_INM <- Quejas_INM %>% dplyr::group_by(State) %>% summarise(number_complaints = sum(number))
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 library(sf)
 mexico <- st_read("mex_admbnda_adm1_govmex.shp")
 df_inmstate <- left_join(mexico,Quejas_INM, by = c("ADM1_ES"="State"))
 df_inmstate <- dplyr::select(df_inmstate, ADM1_ES, number_complaints, geometry)
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 ggplot() +
    geom_sf(data = df_inmstate, aes(fill = number_complaints), size = .3) +
    theme_map() +
@@ -629,16 +761,34 @@ ggplot() +
            legend.position = "bottom") +
     guides(fill = guide_colorbar(title.position = "top", barwidth = 8 )) +
    labs(fill = "Number of Complaints") # title = "Crimes Against Migrants Committed by Authorities by State" caption = "Source: CNDH Transparency Request",
+<<<<<<< HEAD
 ggsave("number_complaints.png")   
 ```
 # Complaints by INM per month 2019
 ```{r inm_complaints_month}
+=======
+
+ggsave("number_complaints.png")   
+
+```
+
+
+# Complaints by INM per month 2019
+
+```{r inm_complaints_month}
+
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 library(readxl)
 library(lubridate)
 Complaints_byINM_1_ <- read_excel("Complaints_byINM (1).xlsx", 
     sheet = "Monthly")
 Complaints_byINM_1_ <- rename(Complaints_byINM_1_, complaint_amount = "Complaint Amount")
 Complaints_byINM_1_$Month <- as.Date(Complaints_byINM_1_$Month, format = "%m/%d/%Y")
+<<<<<<< HEAD
+=======
+
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
 theme_set(theme_bw())
 ggplot(data = Complaints_byINM_1_) +
    theme(legend.background = element_rect(fill = "transparent"), 
@@ -661,6 +811,21 @@ ggplot(data = Complaints_byINM_1_) +
    ylim(40, 100)
    labs(caption = "Source: INM Transparency Request", title = "Number of Misconduct Complaints")
 ggsave("inm_complaints.png")
+<<<<<<< HEAD
 ```
 ```{r pie}
 ```
+=======
+
+
+```
+
+
+
+
+```{r pie}
+
+
+
+```
+>>>>>>> 746c1ab59b97f7a1fc9c6d017e43661bcfaa4fa4
