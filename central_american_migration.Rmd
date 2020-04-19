@@ -549,14 +549,12 @@ df_mxstate <- dplyr::select(df_mxstate, ADM1_ES, number_agents, geometry)
 library(readr)
 library(tidyr)
 library(lubridate)
-
-plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF", "#CC4678FF")
-
-
 apps_amlo <- read_csv("INM Apprehensions AMLO Pres.csv")
 data_long <- gather(apps_amlo, Date, Apprehensions, "2018-01-01":"2020-02-01", factor_key=TRUE)
 data_long$Date <- as.character(data_long$Date)
-data_long$Date <- as.Date(data_long$Date)
+data_long$Date <- ymd(data_long$Date)
+plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF", "#CC4678FF")
+windowsFonts(Times=windowsFont("Times New Roman"))
 
 theme_set(theme_bw())
 ggplot(data = data_long) +
@@ -567,106 +565,13 @@ ggplot(data = data_long) +
          text=element_text(family="Times", face = "bold", size=12), 
          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
          axis.title.x = element_text(vjust = -1),
-         axis.text.y = element_text(hjust = 1.25),
          axis.title.y = element_text(vjust = 3.5)) +
-    scale_color_manual(values = plasma_pal) +
    geom_line(aes(x=Date, y=Apprehensions, color = Country),size = 1,stat="identity")+
-   scale_x_date(date_breaks = "3 month",
-                 date_labels = "%b %Y") +
+   #geom_point(aes(x=Date, y=Apprehensions, color = Country))+
+   scale_x_date(labels = date_format("%b %Y"), date_breaks = "3 months") +
+   scale_color_manual(values = plasma_pal) +  
    xlab("Date") +
-   ylab("Apprehensions") +
-  
+   ylab("Apprehensions") 
 ggsave("inm_apprehensions_amlo.png")
-
-```
-
-
-# INM total Apprehensions Dec 2019 - feb 2020
-
-
-```{r total_apprehensions }
-
-
-library(readr)
-library(tidyr)
-library(lubridate)
-
-plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF", "#CC4678FF")
-
-
-apps_amlo <- read_csv("INM Apprehensions AMLO Pres.csv")
-data_long <- gather(apps_amlo, Date, Apprehensions, "2018-12-01":"2020-02-01", factor_key=TRUE)
-data_long <- filter(data_long, Country == "Total")
-data_long$Date <- as.character(data_long$Date)
-data_long$Date <- as.Date(data_long$Date)
-
-theme_set(theme_bw())
-ggplot(data = data_long) +
-   theme(
-         legend.key = element_rect(fill = "transparent"), 
-         legend.spacing = unit(-1, "lines"),
-         panel.background = element_blank(),
-         axis.line = element_line(colour = "black"),
-         legend.position = "none", 
-         text=element_text(family="Times", face = "bold", size=12), 
-         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-         axis.title.x = element_text(vjust = -1),
-         axis.text.y = element_text(hjust = 1.25),
-         axis.title.y = element_text(vjust = 3.5)) +
-    scale_color_manual(values = plasma_pal) +
-   geom_line(aes(x=Date, y=Apprehensions, color = Country),size = 1,stat="identity")+
-   scale_x_date(date_breaks = "1 month",
-                 date_labels = "%b %Y") +
-   xlab("Date") +
-   ylab("Apprehensions") +
-  
-ggsave("inm_apprehensions_amlo_total.png", width = 14, height = 7, units = "in")
-
-
-```
-
-
-# Total Apprehensions from 2001
-
-
-```{r all_apprehensions_2011onwards}
-
-
-library(readr)
-library(tidyr)
-library(lubridate)
-
-plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF", "#CC4678FF")
-
-
-INM_Apprehensions_total <- read_csv("INM Apprehensions total.csv")
-data_long <- gather(INM_Apprehensions_total, Date, Apprehensions, "2001-01-01":"2020-02-01", factor_key=TRUE)
-data_long <- filter(data_long, Country == "Total")
-data_long$Date <- as.character(data_long$Date)
-data_long$Date <- as.Date(data_long$Date)
-
-theme_set(theme_bw())
-ggplot(data = data_long) +
-   theme(
-         legend.key = element_rect(fill = "transparent"), 
-         legend.spacing = unit(-1, "lines"),
-         panel.background = element_blank(),
-         axis.line = element_line(colour = "black"),
-         legend.position = "none", 
-         text=element_text(family="Times", face = "bold", size=12), 
-         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-         axis.title.x = element_text(vjust = -1),
-         axis.text.y = element_text(hjust = 1.25),
-         axis.title.y = element_text(vjust = 3.5)) +
-    scale_color_manual(values = plasma_pal) +
-   geom_line(aes(x=Date, y=Apprehensions, color = Country),size = 1,stat="identity")+
-   scale_x_date(date_breaks = "1 year",
-                 date_labels = "%Y") +
-   xlab("Date") +
-   ylab("Apprehensions") +
-  
-ggsave("inm_apprehensions_amlo_total_from2011.png", width = 14, height = 7, units = "in")
-
-
 
 ```
