@@ -539,3 +539,37 @@ library(sf)
 mexico <- st_read("mex_admbnda_adm1_govmex.shp")
 df_mxstate <- left_join(mexico,inm_emp, by = c("ADM1_ES"="State"))
 df_mxstate <- dplyr::select(df_mxstate, ADM1_ES, number_agents, geometry)
+```
+
+## Map showing INM Apprehensions
+
+
+```{r}
+
+library(readr)
+library(tidyr)
+library(lubridate)
+apps_amlo <- read_csv("INM Apprehensions AMLO Pres.csv")
+data_long <- gather(apps_amlo, Date, Apprehensions, "1/1/2018":"2/1/2020", factor_key=TRUE)
+data_long$Date <- mdy(data_long,"%m/%d/%Y" )
+
+theme_set(theme_bw())
+ggplot(data = data_long) +
+   theme(legend.background = element_rect(fill = "transparent"), 
+         legend.box.background = element_rect(fill = "transparent"),
+         legend.key = element_rect(fill = "transparent"), 
+         legend.spacing = unit(-1, "lines"),
+         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+         text=element_text(family="Georgia", face = "bold", size=12), 
+         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+         axis.title.x = element_text(vjust = -3),
+         axis.text.y = element_text(hjust = 1.25),
+         axis.title.y = element_text(vjust = 3.5)) +
+   geom_line(aes(x=Date, y=Apprehensions, color = Country),size = 1,stat="identity")+
+   geom_point(aes(x=Date, y=Apprehensions, color = Country))+
+   xlab("Date") +
+   ylab("Apprehensions") +
+   labs(caption = "Source: INM Transparency Request")
+ggsave("inm_apprehensions_amlo.png")
+
+```
