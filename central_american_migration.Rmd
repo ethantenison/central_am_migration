@@ -348,25 +348,26 @@ ggsave("inm_hiring.png")
 
 ```{r motivo_estancia_autorizada}
 library(lubridate)
+library(readxl)
 Humanitarian_Visa_Graph <- read_excel("Humanitarian Visa Graph.xlsx", 
     sheet = "Sheet2")
 Humanitarian_Visa_Graph$date <- ymd(Humanitarian_Visa_Graph$date)
-Humanitarian_Visa_Graph <- filter(Humanitarian_Visa_Graph, date >= as.Date("2016-01-01"))
+Humanitarian_Visa_Graph <- filter(Humanitarian_Visa_Graph, date >= as.Date("2018-12-01") & date <= as.Date("2019-05-01"))
 theme_set(theme_bw())
 ggplot(data = Humanitarian_Visa_Graph, aes(x = date, y = count_mea)) +
    theme(
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
          text=element_text(family="Times", face = "bold", size=12), 
-         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+         axis.text.x = element_text( vjust = 1, hjust = 1)) +
    geom_line(size = 1, color = "#7E03A8FF")+
    scale_y_continuous(label=comma) +
-    scale_x_date(date_breaks = "3 month",
+    scale_x_date(date_breaks = "1 month",
                  date_minor_breaks = "1 month",
                  date_labels = "%b %Y") +
    xlab("Date") +
    ylab("Humanitarian Visas Issued") +
    labs(caption = "Source: INM Transparency Request")
-ggsave("humanitarian_visas.png")
+ggsave("humanitarian_visas.png", width =14, height = 8 )
 ```
 
 ### COMAR Funding 
