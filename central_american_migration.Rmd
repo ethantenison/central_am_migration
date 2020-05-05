@@ -9,7 +9,6 @@ output: html_document
 library(ggplot2)
 library(dplyr)
 library(janitor)
-library(tidyverse)
 library(ggplot2)
 library(viridis)
 library(raster)
@@ -246,6 +245,9 @@ ggsave("latin_america_hdi.png")
 
 ```{r commodities}
 library(readxl)
+library(dplyr)
+library(tidyr)
+
 commodities <- read_excel("CMOHistoricalDataAnnual.xlsx", sheet = "Annual Prices (Real)")
 commodities <- dplyr::rename(commodities, "year" = "...1")
 commodities <- clean_names(commodities)
@@ -268,15 +270,14 @@ p <- ggplot(commodities, aes(x = year, y=value, color = Commodity)) +
    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
          text=element_text(family="Times", face = "bold", size=12),
-         axis.title.x = element_text(vjust = -3),
+         axis.title.x = element_text(vjust = -2),
            axis.title.y = element_text(vjust = 3.5)) +
-   labs(caption = "Source: The World Bank") + 
    scale_color_manual(values = plasma_pal) + 
    xlab("Year") +
    ylab("Real Prices (Adjusted for Inflation)") +
    scale_y_continuous(labels = scales::dollar)
 p + facet_wrap(~Commodity, scale = "free") + theme(strip.background =element_rect(fill="white", color = "white"), panel.border=element_blank())
-ggsave("commodity_prices.png")
+ggsave("commodity_prices.png", dpi = "retina" )
 ```
 
 
