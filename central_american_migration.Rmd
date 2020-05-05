@@ -598,6 +598,46 @@ df_mxstate <- dplyr::select(df_mxstate, ADM1_ES, number_agents, geometry)
 
 ## Map showing INM Apprehensions
 
+```{r inmmap}
+
+library(readr)
+library(dplyr)
+INM_EMPLOYEES_CLEAN <- read_csv("INM_EMPLOYEES_CLEAN.csv")
+inm_emp<- INM_EMPLOYEES_CLEAN %>% dplyr::select(State) %>% filter(State != "" ) %>% mutate(number = 1) 
+inm_emp<- inm_emp %>% dplyr::group_by(State) %>% summarize(number_agents = sum(number))
+adds <- data.frame("State" = c("COLIMA", "MEXICO"), "number_agents" = c(0,0))
+inm_emp <- rbind(inm_emp,adds)
+                         # Install stringi package
+library("stringi")   
+#inm_emp$State <- stri_trans_totitle(inm_emp$State) 
+library(sf)
+mexico <- st_read("mex_admbnda_adm1_govmex.shp")
+df_mxstate <- left_join(mexico,inm_emp, by = c("ADM1_ES"="State"))
+df_mxstate <- dplyr::select(df_mxstate, ADM1_ES, number_agents, geometry)
+
+
+
+##Setting up the map
+theme_set(theme_bw())
+
+(inm_agents_state <- ggplot(data = df_mxstate) +
+      geom_sf(aes(fill = number_agents)) +
+      theme_map() +
+      
+      scale_fill_viridis(option = "plasma", direction = -1, labels = dollar_format(prefix="$")) +
+      theme( axis.title.x = element_blank(), 
+            axis.title.y = element_blank(), panel.background = element_rect(fill = "azure"), 
+            plot.caption = element_text(hjust = 1.5), 
+            panel.border = element_rect(fill = NA),
+            text=element_text(family="Times", face = "bold", size=12),
+            legend.position="bottom")+
+      labs(fill = "Number of INM Agents"))
+ggsave("gdp_percapita.png")
+
+
+
+```
+
 
 ```{r}
 
