@@ -350,7 +350,7 @@ ggsave("inm_hiring.png")
 ```{r motivo_estancia_autorizada}
 library(lubridate)
 library(readxl)
-windowsFonts(Times=windowsFont("Georgia"))
+windowsFonts(Times=windowsFont("Times"))
 
 
 
@@ -389,33 +389,35 @@ ggsave("humanitarian_visas.png", width =14, height = 7,dpi = "retina" )
 ```{r motivo_estancia_autorizada}
 library(lubridate)
 library(readxl)
-windowsFonts(Times=windowsFont("Georgia"))
+windowsFonts(Times=windowsFont("Times"))
 
 total_humanitarian_visas <- read_excel("total_humanitarian visas.xlsx", 
     sheet = "Sheet1")
 
 
 total_humanitarian_visas$Date <- ymd(total_humanitarian_visas$Date)
-total_humanitarian_visas <- filter(total_humanitarian_visas, Date >= as.Date("2018-12-01") & Date <= as.Date("2019-05-01"))
+#total_humanitarian_visas <- filter(total_humanitarian_visas, Date >= as.Date("2018-12-01") & Date <= as.Date("2019-05-01"))
+total_humanitarian_visas <- filter(total_humanitarian_visas, Date >= as.Date("2016-06-01"))
 theme_set(theme_bw())
 ggplot(data = total_humanitarian_visas, aes(x = Date, y = Number_of_Visas)) +
    theme(
-         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-         text=element_text(family="Times", face = "bold", size=20), 
-         axis.text.x = element_text(vjust = -1, size = 20),
-         axis.title.x = element_text(vjust = -3, size = 20),
-         axis.title.y = element_text(vjust = 3, size = 20),
-         axis.text.y = element_text( size = 20),
-         plot.margin = margin(20, 20, 20, 20)) +
+         panel.background = element_blank(),
+         axis.line = element_line(colour = "black"),
+         text=element_text(family="Times", face = "bold", size=12), 
+         axis.text.x = element_text(angle = 45, hjust= 1, vjust = 1, size = 12),
+         axis.title.x = element_text(size = 12),
+         axis.title.y = element_text(vjust = 3, size = 12),
+         axis.text.y = element_text( size = 12),
+         plot.margin = margin(10, 10, 10, 10)) +
    geom_line(size = 1, color = "#7E03A8FF")+
    scale_y_continuous(label=comma) +
-    scale_x_date(date_breaks = "1 month",
-                 date_minor_breaks = "1 month",
+    scale_x_date(date_breaks = "3 month",
+                 date_minor_breaks = "3 month",
                  date_labels = "%b %Y") +
-   geom_vline(xintercept = as.Date("2018-12-07"), linetype = "dashed", size = 1) +
-   geom_vline(xintercept = as.Date("2019-01-28"), linetype = "dashed", size = 1) +
-   geom_vline(xintercept = as.Date("2019-04-01"), linetype = "dashed", size = 1) +
-   geom_vline(xintercept = as.Date("2019-04-23"), linetype = "dashed", size = 1) +
+   #geom_vline(xintercept = as.Date("2018-12-07"), linetype = "dashed", size = 1) +
+   #geom_vline(xintercept = as.Date("2019-01-28"), linetype = "dashed", size = 1) +
+   #geom_vline(xintercept = as.Date("2019-04-01"), linetype = "dashed", size = 1) +
+   #geom_vline(xintercept = as.Date("2019-04-23"), linetype = "dashed", size = 1) +
    xlab("Date") +
    ylab("Humanitarian Visas Issued") +
    #labs(caption = "Source: INM Transparency Request")
