@@ -501,20 +501,20 @@ ggplot(data = Complaints_byINM) +
          legend.key = element_rect(fill = "transparent"), 
          legend.spacing = unit(-1, "lines"),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
-         text=element_text(family="Times", face = "bold", size=12), 
+         text=element_text(family="Times", face = "bold", size=16), 
          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-         axis.title.x = element_text(vjust = -3),
+         axis.title.x = element_text(vjust = 0),
          axis.text.y = element_text(hjust = 1.25),
-         axis.title.y = element_text(vjust = 3.5)) +
+         axis.title.y = element_text(vjust = 2)) +
    geom_line(aes(x=year, y=complaint_number), color = "#0D0887FF", size = 1,stat="identity")+
    geom_point(aes(x=year, y=complaint_number), color = "#0D0887FF")+
-   geom_text(aes(x= year, y = complaint_number, label=complaint_number),hjust=.25, vjust=-2.5)+
+   geom_text(aes(x= year, y = complaint_number, label=complaint_number),hjust=.25, vjust=-2.5, size = 4)+
    ylim(500, 725)+
    scale_x_continuous(breaks = c(2014,2015,2016,2017,2018,2019,2020)) +
    xlab("Year") +
-   ylab("Number of Complaints") +
-   labs(caption = "Source: INM Transparency Request")
-ggsave("inm_complaints.png")
+   ylab("Number of Complaints") 
+   
+ggsave("inm_complaints.png", dpi = 500)
 ```
 ### Price of Hiring Guide
 
