@@ -21,6 +21,7 @@ library(scales)
 library(extrafont)
 library(rnaturalearth)
 library(rnaturalearthdata)
+library(tidyr)
 windowsFonts(Times=windowsFont("Times New Roman"))
 ```
 
@@ -84,14 +85,13 @@ theme_set(theme_bw())
 ggplot(data = df, aes(x = year, y = population, group = Country)) +
    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
-         text=element_text(family="Times", face = "bold", size=12)) +
+         text=element_text(family="Times", face = "bold", size=16)) +
    geom_line(aes(color = Country), size = 1) +
    #geom_point(aes(color = Country)) +
    #ggtitle("Population of foreign born Central Americans in the United States") +
    xlab("Year") +
    ylab("Population") +
    scale_y_continuous(label=comma) +
-   labs(caption = "Data source: US Census")+
    scale_color_manual(values = plasma_pal) +
    geom_vline(xintercept = 1998, linetype = "dashed") +
    geom_segment(aes(
@@ -124,7 +124,7 @@ ggplot(data = df, aes(x = year, y = population, group = Country)) +
       label = expression("Salvadoran \n", paste("Civil War begins")),
       size = 3.5
    ) 
-ggsave("foreign_born_pop.png")
+ggsave("foreign_born_pop.png", )
 ```
 ### HDI Map 
 
@@ -162,13 +162,13 @@ world$x2018 <- as.numeric(world$x2018)
             panel.background = element_rect(fill = "azure"), 
             plot.caption = element_text(hjust = 1.5), 
             panel.border = element_rect(fill = NA),
-            text=element_text(family="Times", face = "bold", size=12),
+            text=element_text(family="Times", face = "bold", size=16),
             legend.position = c(0.03, 0.1),
             legend.direction = "horizontal")+
       geom_text(data = coords, x = coords$long, y = coords$lat, label= coords$HDI, nudge_x = 0.25,
-                nudge_y = 0.25, check_overlap = T) +
+                nudge_y = 0.25, check_overlap = 7, size = 5) +
       annotate(geom = "text", x = -91.7, y = 32.26, label = "0.920", 
-               color = "white", size = 4) +
+               color = "white", size = 5) +
       labs(fill = "HDI"))
       
 ggsave("central_america_hdi.png", dpi = "retina")
@@ -281,15 +281,16 @@ p <- ggplot(commodities, aes(x = year, y=value, color = Commodity)) +
    geom_line(size = 1, show.legend = FALSE) + 
    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
-         text=element_text(family="Times", face = "bold", size=12),
+         text=element_text(family="Times", face = "bold", size=16),
          axis.title.x = element_text(vjust = -2),
-           axis.title.y = element_text(vjust = 3.5)) +
+           axis.title.y = element_text(vjust = 3.5),
+         plot.margin = margin(10, 10, 10, 10)) +
    scale_color_manual(values = plasma_pal) + 
    xlab("Year") +
    ylab("Real Prices (Adjusted for Inflation)") +
    scale_y_continuous(labels = scales::dollar)
 p + facet_wrap(~Commodity, scale = "free") + theme(strip.background =element_rect(fill="white", color = "white"), panel.border=element_blank())
-ggsave("commodity_prices.png", dpi = "retina" )
+ggsave("commodity_prices.png", dpi = 500 )
 ```
 
 
@@ -308,7 +309,7 @@ theme_set(theme_bw())
 ggplot(data = ana, aes(x = month, y = count)) +
    theme(panel.grid.major = element_blank(),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
-         text=element_text(family="Times", face = "bold", size=12),
+         text=element_text(family="Times", face = "bold", size=16),
          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
    geom_line(size = 1, color = "#7E03A8FF") +
     scale_x_date(date_breaks = "1 month",
@@ -316,7 +317,6 @@ ggplot(data = ana, aes(x = month, y = count)) +
                  date_labels = "%b %Y") +
    xlab("Month Hired") +
    ylab("INM Agents") +
-   labs(caption = "Source: INM Transparency Request") +
    geom_vline(xintercept = as.Date("2019-06-01"), linetype = "dashed") +
    geom_segment(aes(
       x = as.Date("2019-05-10"),
@@ -353,7 +353,7 @@ ggplot(data = ana, aes(x = month, y = count)) +
    
    
         
-ggsave("inm_hiring.png")
+ggsave("inm_hiring.png", dpi = 500)
 ```
 
 
@@ -415,11 +415,11 @@ ggplot(data = total_humanitarian_visas, aes(x = Date, y = Number_of_Visas)) +
    theme(
          panel.background = element_blank(),
          axis.line = element_line(colour = "black"),
-         text=element_text(family="Times", face = "bold", size=20), 
-         axis.text.x = element_text(angle = 45, hjust= 1, vjust = 1, size = 20),
-         axis.title.x = element_text(size = 20),
-         axis.title.y = element_text(vjust = 3, size = 20),
-         axis.text.y = element_text( size = 20),
+         text=element_text(family="Times", face = "bold", size=24), 
+         axis.text.x = element_text(angle = 45, hjust= 1, vjust = 1, size = 24),
+         axis.title.x = element_text(size = 24),
+         axis.title.y = element_text(vjust = 3, size = 24),
+         axis.text.y = element_text( size = 24),
          plot.margin = margin(10, 10, 10, 10)) +
    geom_line(size = 1, color = "#7E03A8FF")+
    scale_y_continuous(label=comma) +
@@ -433,7 +433,7 @@ ggplot(data = total_humanitarian_visas, aes(x = Date, y = Number_of_Visas)) +
    xlab("Date") +
    ylab("Humanitarian Visas Issued") +
    #labs(caption = "Source: INM Transparency Request")
-ggsave("total_humanitarian_visas.png", width =14, height = 7,dpi = "retina" )
+ggsave("total_humanitarian_visas.png", width =14, height = 7,dpi = 500 )
 
 
 
