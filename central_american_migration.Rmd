@@ -137,9 +137,9 @@ names(df) <- as.matrix(df[1,])
 df <- df[-1,]
 df <- clean_names(df)
 df$country[df$country == "United States"] <- "United States of America"
-coords <- data.frame("long" =c(-90.4,-98.8,-91.7,-88.61,-86.94,-88.89,-85.04,-83.93,-79.55,-78.56,-77.36),
-                "lat" = c(15.3,18.9,32.26,17.1,14.78,13.62,12.66,9.88,9.11,21.80,18.12),
-                "HDI" = c(0.651,0.767,0.920,0.720,0.623,0.667,0.651,0.794,0.795,0.778,0.726))
+coords <- data.frame("long" =c(-90.4,-98.8,-86.5,-86.94,-89.4,-85.3,-86.6,-79.55,-78.56,-77.36),
+                "lat" = c(15.3,18.9,17.1,14.78,12.6,12.66,9.0,10.5,23.8,17.12),
+                "HDI" = c(0.651,0.767,0.720,0.623,0.667,0.651,0.794,0.795,0.778,0.726))
 ##Setting up the map
 theme_set(theme_bw())
 world <- ne_countries(scale='medium',returnclass = 'sf')
@@ -151,18 +151,27 @@ world<-world[!(world$x2018 <.6),]
 world$x2018 <- as.numeric(world$x2018)
 (ggulf <- ggplot(data = world) +
       geom_sf(aes(fill = x2018)) +
+       theme_map() +
       annotate(geom = "text", x = -90, y = 26, label = "Gulf of Mexico", 
                fontface = "italic", color = "grey22", size = 6) +
       coord_sf(xlim = c(-102.15, -74.12), ylim = c(7.65, 33.97), expand = FALSE) +
       scale_fill_viridis(option = "plasma", direction = -1) +
+      guides(fill = guide_colourbar(title.position = "top",  barwidth = 8)) +
       theme( axis.title.x = element_blank(), 
-            axis.title.y = element_blank(), panel.background = element_rect(fill = "azure"), 
-            panel.border = element_rect(fill = NA), text=element_text(family="Times", face = "bold", size=12))+
+            axis.title.y = element_blank(),
+            panel.background = element_rect(fill = "azure"), 
+            plot.caption = element_text(hjust = 1.5), 
+            panel.border = element_rect(fill = NA),
+            text=element_text(family="Times", face = "bold", size=12),
+            legend.position = c(0.03, 0.1),
+            legend.direction = "horizontal")+
       geom_text(data = coords, x = coords$long, y = coords$lat, label= coords$HDI, nudge_x = 0.25,
                 nudge_y = 0.25, check_overlap = T) +
+      annotate(geom = "text", x = -91.7, y = 32.26, label = "0.920", 
+               color = "white", size = 4) +
       labs(fill = "HDI"))
       
-ggsave("central_america_hdi.png")
+ggsave("central_america_hdi.png", dpi = "retina")
 ```
 
 
@@ -198,15 +207,18 @@ world$x2018 <- as.numeric(world$x2018)
       coord_sf(xlim = c(-102.15, -74.12), ylim = c(7.65, 33.97), expand = FALSE) +
       scale_fill_viridis(option = "plasma", direction = -1, labels = dollar_format(prefix="$")) +
       theme( axis.title.x = element_blank(), 
-            axis.title.y = element_blank(), panel.background = element_rect(fill = "azure"), 
+            axis.title.y = element_blank(),
+            panel.background = element_rect(fill = "azure"), 
             plot.caption = element_text(hjust = 1.5), 
-            panel.border = element_rect(fill = NA), text=element_text(family="Georgia", face = "bold", size=12))+
+            panel.border = element_rect(fill = NA), 
+            text=element_text(family="Times", face = "bold", size=12),
+            )+
       geom_text(data = coords, x = coords$long, y = coords$lat, label= coords$HDI, nudge_x = 1,
                 nudge_y = 0.25, check_overlap = T) +
       annotate(geom = "text", x = -91.7, y = 32.26, label = "$62,795", 
-               color = "white", size = 6) +
+               color = "white", size = 4) +
       labs(fill = "GDP Per capita, PPP"))
-ggsave("gdp_percapita.png")
+ggsave("gdp_percapita.png", dpi = "retina")
 ```
 
 ### HDI of Latin American 
@@ -403,11 +415,11 @@ ggplot(data = total_humanitarian_visas, aes(x = Date, y = Number_of_Visas)) +
    theme(
          panel.background = element_blank(),
          axis.line = element_line(colour = "black"),
-         text=element_text(family="Times", face = "bold", size=12), 
-         axis.text.x = element_text(angle = 45, hjust= 1, vjust = 1, size = 12),
-         axis.title.x = element_text(size = 12),
-         axis.title.y = element_text(vjust = 3, size = 12),
-         axis.text.y = element_text( size = 12),
+         text=element_text(family="Times", face = "bold", size=20), 
+         axis.text.x = element_text(angle = 45, hjust= 1, vjust = 1, size = 20),
+         axis.title.x = element_text(size = 20),
+         axis.title.y = element_text(vjust = 3, size = 20),
+         axis.text.y = element_text( size = 20),
          plot.margin = margin(10, 10, 10, 10)) +
    geom_line(size = 1, color = "#7E03A8FF")+
    scale_y_continuous(label=comma) +
