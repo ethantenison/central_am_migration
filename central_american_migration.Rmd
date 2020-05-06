@@ -533,6 +533,7 @@ price_coyote <- gather(price_coyote, year, value, x2012:x2019)
 price_coyote <- rename(price_coyote, measure = x1)
 price_coyote$year <- gsub("x", "", price_coyote$year)
 price_coyote$year <- as.numeric(price_coyote$year)
+price_coyote <- filter(price_coyote, measure == "mean price")
  theme_set(theme_bw())
  ggplot(data = price_coyote) + 
     theme(legend.background = element_rect(fill = "transparent"), 
@@ -540,21 +541,22 @@ price_coyote$year <- as.numeric(price_coyote$year)
           legend.title = element_blank(),
           legend.spacing = unit(-1, "lines"),
           panel.background = element_blank(), axis.line = element_line(colour = "black"),
-          text=element_text(family="Times", face = "bold", size=12), 
+          text=element_text(family="Times", face = "bold", size=16), 
           axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
           axis.text.y = element_text(hjust = 1.25),
           axis.text.y.right = element_text(hjust = -.25),
-          axis.title.x = element_text(vjust = -3),
-           axis.title.y = element_text(vjust = 3.5),
-           legend.position = "top")+
+          axis.title.x = element_text(vjust = 0),
+           axis.title.y = element_text(vjust = 3),
+           legend.position = "right")+
      scale_color_manual(values=c("#7E03A8FF", "#F89441FF")) +
+     scale_x_continuous(breaks = c(2012,2013,2014,2015,2016,2017,2018,2019)) +
     geom_line(aes(x=year, y=value, color = measure), size = 1,stat="identity")+
     xlab("Year") +
-   ylab("Cost of Hiring a Guide") +
-   labs(caption = "Source: COLEF")
+   ylab("Cost of Hiring a Guide") 
+  
     
    
-ggsave("price_hiring_guide.png")
+ggsave("price_hiring_guide.png", dpi = 500)
 ```
 
 ### Percentage Guide
@@ -582,12 +584,12 @@ ggplot(data = contratoguia) +
    
    geom_line(aes(x=Year, y=Percentage_Yes), color = "#CC4678FF", size = 1,stat="identity")+
    geom_point(aes(x=Year, y=Percentage_Yes), color = "#CC4678FF")+
-   geom_text(aes(x= Year, y = Percentage_Yes, label=perch),hjust=.25, vjust=-2, size = 4)+
+   geom_text(aes(x= Year, y = perc_pos, label=perch),hjust=.35, vjust=-1, size = 4)+
    ylim(40, 65) +
    scale_x_continuous(breaks = c(2011,2012,2013,2014,2015,2016,2017,2018,2019)) +
    xlab("Year") +
    ylab("Hired a Guide (%)") +
-ggsave("hired_guide.png", dpi = 500)
+ggsave("hired_guide.png", dpi = 500, height = 4.5, width =7)
 ```
 
 
