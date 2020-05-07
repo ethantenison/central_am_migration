@@ -763,7 +763,7 @@ ggplot(data = data_long, aes(x=Month)) +
    theme(
          legend.key = element_rect(fill = "transparent"), 
          legend.spacing = unit(-1, "lines"),
-         legend.position = "top",
+         legend.position = "right",
          legend.title = element_blank(),
          panel.background = element_blank(),
          axis.line = element_line(colour = "black"),
