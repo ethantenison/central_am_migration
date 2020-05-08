@@ -787,3 +787,37 @@ ggsave("inm_apprehensions_amlo_from2019.png", height = 7, width = 14, dpi = 500)
 
 
 ```
+
+
+
+
+```{r comar_offices}
+
+
+library(readr)
+library(ggmap)
+
+COMAR_offices <- read_csv("COMAR_offices.csv")
+COMAR_offices$`Type of Office` <- as.factor(COMAR_offices$`Type of Office`)
+
+theme_set(theme_bw())
+
+  ggplot(data = world) +
+    geom_sf() +
+    theme_map() +
+    geom_point(data = COMAR_offices, shape = 25, aes(y=Latitude, x = Longitude, fill = `Type of Office`), size = 3) +
+    scale_fill_viridis_d(option = "plasma", direction = 1) +
+    coord_sf(xlim = c(-120.15, -85.12), ylim = c(12, 35), expand = FALSE) +
+    geom_text(data = COMAR_offices, x = COMAR_offices$fix_long, y = COMAR_offices$fix_lat, label= COMAR_offices$City,
+                nudge_y = -50, check_overlap = 1, size = 3) +
+    theme( axis.title.x = element_blank(), 
+            axis.title.y = element_blank(), panel.background = element_rect(fill = "azure"), 
+            plot.caption = element_text(hjust = 1.5), 
+            panel.border = element_rect(fill = NA),
+            text=element_text(family="Times", face = "bold", size=16),
+            legend.position = c(0.03, 0.15),
+            legend.title = element_blank()
+            )
+
+  ggsave("inm_offices.png", dpi = 500)
+```
