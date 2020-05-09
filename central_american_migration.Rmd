@@ -821,3 +821,45 @@ theme_set(theme_bw())
 
   ggsave("inm_offices.png", dpi = 500)
 ```
+
+```{r inm_detention}
+
+library(readxl)
+library(ggmap)
+
+inm_facilities_2020 <- read_excel("inm-facilities-2020.xlsx", 
+    col_types = c("skip", "text", "text", 
+        "text", "text", "numeric", "numeric"))
+
+inm_facilities_2020$facilitytype <- as.factor(inm_facilities_2020$facilitytype)
+
+
+ 
+coords <- data.frame("long" =c(-100.133321,-99.014828),# 
+                "lat" = c(20.391975,33.285146),#
+                "city" = c("Mexico", "United States")) #
+
+theme_set(theme_bw())
+plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF") #"#CC4678FF"
+
+  ggplot(data = world) +
+    geom_sf() +
+    theme_map() +
+    geom_point(data = inm_facilities_2020, aes(y=latitude, x = longitude, shape =facilitytype, color = facilitytype),alpha = 0.8, size = 3) +
+    scale_color_manual(values = plasma_pal) +
+    coord_sf(xlim = c(-120.15, -85.12), ylim = c(12, 35), expand = FALSE) + ## c(-120.15, -75.12), ylim = c(10, 35),
+    #geom_text(data = coords, x = coords$long, y = coords$lat, label= coords$city,
+     #           check_overlap = 1, size = 5) +
+    theme( axis.title.x = element_blank(), 
+            axis.title.y = element_blank(),
+           panel.background = element_rect(fill = "azure"), 
+            plot.caption = element_text(hjust = 1.5), 
+            panel.border = element_rect(fill = NA),
+            text=element_text(family="Times", face = "bold", size=16),
+            legend.position = c(0.03, 0.15),
+            legend.title = element_blank()
+            )
+
+  ggsave("inm_detention_centers.png", dpi = 500)
+
+```
