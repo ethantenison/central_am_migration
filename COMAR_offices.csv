@@ -1,0 +1,9 @@
+﻿Country (Name),State/Province,City,fix_lat,Latitude,fix_long,Longitude,Type of Office
+Mexico,Nuevo Leon,Monterrey,24.6866,25.6866,-100.3161,-100.3161,INM
+Mexico,Baja California,Tijuana,31.5149,32.5149,-118.0382,-117.0382,INM
+Mexico,Chiapas,Palenque,16.46308,17.46308,-92.176072,-91.876072,INM
+Mexico,Veracruz,Acayucan,16.947779,17.947779,-95.5146,-94.9146,Office
+Mexico,Tabasco,Tenosique,16.4727,17.4727,-91.4251,-91.4251,Shared Space
+Mexico,Chiapas,Tapachula,13.9056,14.9056,-93.0634,-92.2634,Office
+Mexico,Distrito Federal,Mexico City ,18.391868,19.391868,-99.136277,-99.136277,Office
+Mexico,Jalisco,Guadalajara,19.6597,20.6597,-102.9,-103.3496,Unopened Location

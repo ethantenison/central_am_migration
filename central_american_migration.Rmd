@@ -259,19 +259,20 @@ ggsave("latin_america_hdi.png")
 library(readxl)
 library(dplyr)
 library(tidyr)
+library(ggplot2)
 
 commodities <- read_excel("CMOHistoricalDataAnnual.xlsx", sheet = "Annual Prices (Real)")
 commodities <- dplyr::rename(commodities, "year" = "...1")
 commodities <- clean_names(commodities)
 commodities <- dplyr::select(commodities, year, coffee_arabica, coffee_robusta, sugar_world, banana_us)
-commodities <- dplyr::rename(commodities,  "Coffee Arabica" = "coffee_arabica", "Coffee Robusta" = "coffee_robusta", "Sugar" = "sugar_world", "US Bananas" = "banana_us")
+commodities <- dplyr::rename(commodities,  "Coffee Arabica" = "coffee_arabica", "Coffee Robusta" = "coffee_robusta", "Sugar" = "sugar_world", "Bananas" = "banana_us")
 commodities <-pivot_longer(
               commodities,
               cols = c(
                       "Coffee Arabica",
                       "Coffee Robusta", 
                       "Sugar",
-                      "US Bananas"
+                      "Bananas"
               ),
               names_to = "Commodity",
         
@@ -767,7 +768,7 @@ ggplot(data = data_long, aes(x=Month)) +
          legend.title = element_blank(),
          panel.background = element_blank(),
          axis.line = element_line(colour = "black"),
-         text=element_text(family="Times", face = "bold", size=24), 
+         text=element_text(family="Times", face = "bold", size=30), 
          axis.text.x = element_text(hjust= 1, angle = 45),
          axis.title.x = element_text(),
          axis.title.y = element_text(vjust = 2)) +
@@ -783,7 +784,7 @@ ggplot(data = data_long, aes(x=Month)) +
    #geom_vline(xintercept = as.Date("2020-01-01"), linetype = "dashed", size = 1) +
    #xlab("Date") +
    #ylab("Apprehensions") 
-ggsave("inm_apprehensions_amlo_from2019.png", height = 7, width = 14, dpi = 500)
+ggsave("inm_apprehensions_amlo_from2019.png", height = 7, width = 14, dpi = 900)
 
 
 ```
@@ -810,6 +811,13 @@ theme_set(theme_bw())
     coord_sf(xlim = c(-120.15, -85.12), ylim = c(12, 35), expand = FALSE) +
     geom_text(data = COMAR_offices, x = COMAR_offices$fix_long, y = COMAR_offices$fix_lat, label= COMAR_offices$City,
                 nudge_y = -50, check_overlap = 1, size = 3) +
+    annotate(
+      "text",
+      x = -90.70510,
+      y = 18.27270,
+      label = "Tenosique",
+      size = 3
+   ) +
     theme( axis.title.x = element_blank(), 
             axis.title.y = element_blank(), panel.background = element_rect(fill = "azure"), 
             plot.caption = element_text(hjust = 1.5), 
