@@ -75,6 +75,7 @@ df <- gather(df, year, population, "1960":"2000")
 df$population <- as.numeric(gsub(",", "", df$population))
 df <- rbind(df, df_2010)
 df$year <- as.numeric(df$year)
+df <- rename(df, País = Country)
 ```
 
 ### Central Americans in the United States
@@ -82,11 +83,11 @@ df$year <- as.numeric(df$year)
 ```{r ca_pop_ggplot}
 plasma_pal <- c("#7E03A8FF","#0D0887FF", "#F89441FF", "#CC4678FF")
 theme_set(theme_bw())
-ggplot(data = df, aes(x = year, y = population, group = Country)) +
+ggplot(data = df, aes(x = year, y = population, group = País)) +
    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
          panel.background = element_blank(), axis.line = element_line(colour = "black"),
          text=element_text(family="Times", face = "bold", size=16)) +
-   geom_line(aes(color = Country), size = 1) +
+   geom_line(aes(color = País), size = 1) +
    #geom_point(aes(color = Country)) +
    #ggtitle("Population of foreign born Central Americans in the United States") +
    xlab("Year") +
@@ -103,28 +104,28 @@ ggplot(data = df, aes(x = year, y = population, group = Country)) +
    arrow = arrow(length = unit(0.5, "cm"))) +
    annotate(
       "text",
-      x = 1989,
+      x = 1988,
       y = 970000,
-      label = expression("Hurricane Mitch \n", paste("hits Honduras")),
+      label = expression("El huracán Mitch \n", paste("golpea Honduras")),
       size = 3.5
    ) +
    
    geom_vline(xintercept = 1979, linetype = "dashed") +
    geom_segment(aes(
       x = 1975,
-      y = 500000,
+      y = 480000,
       xend = 1978.5,
-      yend = 500000
+      yend = 480000
    ),
    arrow = arrow(length = unit(0.5, "cm"))) +
    annotate(
       "text",
-      x = 1970,
-      y = 450000,
-      label = expression("Salvadoran \n", paste("Civil War begins")),
+      x = 1968.5,
+      y = 451000,
+      label = expression("Inicia la guerra civil  \n", paste("salvadoreña")),
       size = 3.5
    ) 
-ggsave("foreign_born_pop.png", )
+ggsave("foreign_born_pop.png", dpi = 500)
 ```
 ### HDI Map 
 
@@ -139,7 +140,8 @@ df <- clean_names(df)
 df$country[df$country == "United States"] <- "United States of America"
 coords <- data.frame("long" =c(-90.4,-98.8,-86.5,-86.94,-89.4,-85.3,-86.6,-79.55,-78.56,-77.36),
                 "lat" = c(15.3,18.9,17.1,14.78,12.6,12.66,9.0,10.5,23.8,17.12),
-                "HDI" = c(0.651,0.767,0.720,0.623,0.667,0.651,0.794,0.795,0.778,0.726))
+                "IDH" = c(0.651,0.767,0.720,0.623,0.667,0.651,0.794,0.795,0.778,0.726))
+
 ##Setting up the map
 theme_set(theme_bw())
 world <- ne_countries(scale='medium',returnclass = 'sf')
@@ -152,7 +154,7 @@ world$x2018 <- as.numeric(world$x2018)
 (ggulf <- ggplot(data = world) +
       geom_sf(aes(fill = x2018)) +
        theme_map() +
-      annotate(geom = "text", x = -90, y = 26, label = "Gulf of Mexico", 
+      annotate(geom = "text", x = -90, y = 26, label = "Golfo de México", 
                fontface = "italic", color = "grey22", size = 6) +
       coord_sf(xlim = c(-102.15, -74.12), ylim = c(7.65, 33.97), expand = FALSE) +
       scale_fill_viridis(option = "plasma", direction = -1) +
@@ -165,11 +167,11 @@ world$x2018 <- as.numeric(world$x2018)
             text=element_text(family="Times", face = "bold", size=16),
             legend.position = c(0.03, 0.1),
             legend.direction = "horizontal")+
-      geom_text(data = coords, x = coords$long, y = coords$lat, label= coords$HDI, nudge_x = 0.25,
+      geom_text(data = coords, x = coords$long, y = coords$lat, label= coords$IDH, nudge_x = 0.25,
                 nudge_y = 0.25, check_overlap = 7, size = 5) +
       annotate(geom = "text", x = -91.7, y = 32.26, label = "0.920", 
                color = "white", size = 5) +
-      labs(fill = "HDI"))
+      labs(fill = "IDH"))
       
 ggsave("central_america_hdi.png", dpi = "retina")
 ```
@@ -265,14 +267,14 @@ commodities <- read_excel("CMOHistoricalDataAnnual.xlsx", sheet = "Annual Prices
 commodities <- dplyr::rename(commodities, "year" = "...1")
 commodities <- clean_names(commodities)
 commodities <- dplyr::select(commodities, year, coffee_arabica, coffee_robusta, sugar_world, banana_us)
-commodities <- dplyr::rename(commodities,  "Coffee Arabica" = "coffee_arabica", "Coffee Robusta" = "coffee_robusta", "Sugar" = "sugar_world", "Bananas" = "banana_us")
+commodities <- dplyr::rename(commodities,  "Café Arábica" = "coffee_arabica", "Café Robusto" = "coffee_robusta", "Azucar" = "sugar_world", "Plátanos" = "banana_us")
 commodities <-pivot_longer(
               commodities,
               cols = c(
-                      "Coffee Arabica",
-                      "Coffee Robusta", 
-                      "Sugar",
-                      "Bananas"
+                      "Café Arábica",
+                      "Café Robusto", 
+                      "Azucar",
+                      "Plátanos"
               ),
               names_to = "Commodity",
         
@@ -288,7 +290,7 @@ p <- ggplot(commodities, aes(x = year, y=value, color = Commodity)) +
          plot.margin = margin(10, 10, 10, 10)) +
    scale_color_manual(values = plasma_pal) + 
    xlab("Year") +
-   ylab("Real Prices (Adjusted for Inflation)") +
+   ylab("Precios reales (ajustado por inflación)") +
    scale_y_continuous(labels = scales::dollar)
 p + facet_wrap(~Commodity, scale = "free") + theme(strip.background =element_rect(fill="white", color = "white"), panel.border=element_blank())
 ggsave("commodity_prices.png", dpi = 500 )
@@ -316,8 +318,8 @@ ggplot(data = ana, aes(x = month, y = count)) +
     scale_x_date(date_breaks = "1 month",
                  date_minor_breaks = "1 month",
                  date_labels = "%b %Y") +
-   xlab("Month Hired") +
-   ylab("INM Agents") +
+   xlab("Mes contratado") +
+   ylab("Agentes INM") +
    geom_vline(xintercept = as.Date("2019-06-01"), linetype = "dashed") +
    geom_segment(aes(
       x = as.Date("2019-05-10"),
@@ -330,7 +332,7 @@ ggplot(data = ana, aes(x = month, y = count)) +
       "text",
       x = as.Date("2019-04-10"),
       y = 100,
-      label = expression("Garduño is appointed \n", paste("as INM director")),
+      label = expression("Garduño es nombrado \n", paste("director del INM")),
       size = 3.5
    ) +
    
@@ -347,7 +349,7 @@ ggplot(data = ana, aes(x = month, y = count)) +
       "text",
       x = as.Date("2019-02-01"),
       y = 50,
-      label = expression("López Obrador \n", paste("assumes presidency")),
+      label = expression("López Obrador \n", paste("toma la presidencia")),
       size = 3.5
    )
    
@@ -431,8 +433,8 @@ ggplot(data = total_humanitarian_visas, aes(x = Date, y = Number_of_Visas)) +
    #geom_vline(xintercept = as.Date("2019-01-28"), linetype = "dashed", size = 1) +
    #geom_vline(xintercept = as.Date("2019-04-01"), linetype = "dashed", size = 1) +
    #geom_vline(xintercept = as.Date("2019-04-23"), linetype = "dashed", size = 1) +
-   xlab("Date") +
-   ylab("Humanitarian Visas Issued") +
+   xlab("Fecha") +
+   ylab("Visas humanitarias emitidas") +
    #labs(caption = "Source: INM Transparency Request")
 ggsave("total_humanitarian_visas.png", width =14, height = 7,dpi = 500 )
 
@@ -447,7 +449,7 @@ library(readxl)
 windowsFonts(Times=windowsFont("Times"))
 Comar_Budget_App <- read_excel("Comar Budget and Applications 2013-2020.xlsx")
 Comar_Budget_App <- clean_names(Comar_Budget_App)
-Comar_Budget_App <- mutate(Comar_Budget_App, apps = "Applications Submitted", perpes = "Pesos per Applicant")
+Comar_Budget_App <- mutate(Comar_Budget_App, apps = "Solicitud presentada", perpes = "Pesos por solicitante")
 theme_set(theme_bw())
 ggplot(data = Comar_Budget_App, aes(x=year, y=refugee_status_applications_submitted, fill=apps)) + 
    theme(legend.background = element_rect(fill = "transparent"), 
@@ -460,17 +462,17 @@ ggplot(data = Comar_Budget_App, aes(x=year, y=refugee_status_applications_submit
          axis.text.y.left = element_text(hjust = 1),
          axis.text.y.right = element_text(hjust = 1),
          axis.title.y.right = element_text( vjust = 2.5),
-         axis.title.y.left = element_text(vjust = 2.5),
+         axis.title.y.left = element_text(vjust = 2.5, hjust=1),
          axis.title.x = element_text(vjust = -1),
          legend.position = "bottom")+
    geom_bar(stat="identity", width = .5) +
    geom_line(data = Comar_Budget_App, aes(x=year, y=applications_per_peso*8, color = perpes), size = 1,stat="identity") + 
-   scale_y_continuous(label = comma, sec.axis = sec_axis(~./8, name = "Pesos per Applicant", label = comma)) +
+   scale_y_continuous(label = comma, sec.axis = sec_axis(~./8, name = "pesos por solicitante", label = comma)) +
    scale_x_continuous(breaks = c(2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
    scale_color_manual(NULL, values = "#CC4678FF") +
    scale_fill_manual(values = "#0D0887FF") +
-   xlab("Year") +
-   ylab("Refugee Applications Submitted") +
+   xlab("Año") +
+   ylab("Solicitudes enviadas por refugiados") +
     geom_segment(aes(
       x = 2014,
       y = 88000,
@@ -482,7 +484,7 @@ ggplot(data = Comar_Budget_App, aes(x=year, y=refugee_status_applications_submit
       "text",
       x = 2015.9,
       y = 88000,
-      label = "$11,288 pesos per applicant",
+      label = "$11,288 pesos por solicitante",
       size = 4.5
    )
    
@@ -650,7 +652,7 @@ theme_set(theme_bw())
             text=element_text(family="Times", face = "bold", size=16),
             legend.position = c(0.03, 0.1),
             legend.direction = "horizontal")+
-      labs(fill = "Number of Agents"))
+      labs(fill = "Número de agentes"))
 ggsave("inm_Agents_state.png", dpi = 500)
 
 
@@ -681,7 +683,7 @@ ggplot(data = data_long) +
          text=element_text(family="Times", face = "bold", size=24), 
          axis.text.x = element_text(hjust= 1, angle = 45),
          axis.title.x = element_text(),
-         axis.title.y = element_text(vjust = 2.5)) +
+         axis.title.y = element_text(vjust = 2)) +
    geom_line(aes(x=Date, y=Apprehensions, color = Country),size = 1,stat="identity")+
    #geom_point(aes(x=Date, y=Apprehensions, color = Country))+
     scale_x_date(date_breaks = "2 month",
@@ -692,8 +694,8 @@ ggplot(data = data_long) +
    #geom_vline(xintercept = as.Date("2019-06-01"), linetype = "dashed", size = 1) +
    #geom_vline(xintercept = as.Date("2019-10-01"), linetype = "dashed", size = 1) +
    #geom_vline(xintercept = as.Date("2020-01-01"), linetype = "dashed", size = 1) +
-   #xlab("Date") +
-   #ylab("Apprehensions") 
+   xlab("Fecha") +
+   ylab("Detenciones") 
 ggsave("inm_apprehensions_amlo_from2019.png", height = 7, width = 14, dpi = 500)
 
 ```
@@ -771,7 +773,7 @@ ggplot(data = data_long, aes(x=Month)) +
          text=element_text(family="Times", face = "bold", size=30), 
          axis.text.x = element_text(hjust= 1, angle = 45),
          axis.title.x = element_text(),
-         axis.title.y = element_text(vjust = 2)) +
+         axis.title.y = element_text(vjust = 1.5)) +
    geom_line(aes( y=Apprehensions, color = `Migration Enforcement`),size = 1)+
    #geom_point(aes(x=Month, y=Apprehensions, color = Country))+
     scale_x_date(date_breaks = "2 month",
@@ -782,8 +784,8 @@ ggplot(data = data_long, aes(x=Month)) +
    #geom_vline(xintercept = as.Date("2019-06-01"), linetype = "dashed", size = 1) +
    #geom_vline(xintercept = as.Date("2019-10-01"), linetype = "dashed", size = 1) +
    #geom_vline(xintercept = as.Date("2020-01-01"), linetype = "dashed", size = 1) +
-   #xlab("Date") +
-   #ylab("Apprehensions") 
+   xlab("Fecha") +
+   ylab("Detenciones") 
 ggsave("inm_apprehensions_amlo_from2019.png", height = 7, width = 14, dpi = 900)
 
 
